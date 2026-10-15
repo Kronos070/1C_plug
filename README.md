@@ -116,4 +116,10 @@ perun
 - `bootstrap` — сборка зависимостей;
 - `src/main/resources/web` — интерфейс чата (HTML, CSS, JS).
 
+Иконки вкладки (`src/main/resources/icons/perun.png` и `perun@2x.png`) — пиксельная «П» ПерУНа. Они генерируются скриптом, сторонние библиотеки не нужны:
+
+```bash
+python3 scripts/gen-icons.py
+```
+
 Демо-режим целиком лежит в пакете `infrastructure/mock`. Чтобы убрать его, удалите пакет и ветку `demoMode` в `bootstrap/ChatAssembler`.
