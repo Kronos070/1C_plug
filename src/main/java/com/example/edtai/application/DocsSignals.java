@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 public final class DocsSignals {
 
     public static final String RECONNECTED = "";
+    public static final String UPDATED = "docs:updated";
 
     private static final List<Consumer<String>> LISTENERS = new CopyOnWriteArrayList<>();
 

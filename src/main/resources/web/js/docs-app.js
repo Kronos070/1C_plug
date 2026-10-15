@@ -155,6 +155,10 @@
   };
   P.docsApp.signal = function (text) {
     // Реагирует на смену статуса индексации
+    if (text === "docs:updated") {
+      P.docsApp.reload();
+      return;
+    }
     const now = /индексация/i.test(text || "");
     if ((indexing && !now) || text === "") {
       P.docsApp.reload();
