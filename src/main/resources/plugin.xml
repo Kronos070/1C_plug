@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.ui.views">
+      <category
+            id="com.example.edtai"
+            name="ПерУН">
+      </category>
+      <view
+            id="com.example.edtai.view.chat"
+            name="ПерУН"
+            category="com.example.edtai"
+            class="com.example.edtai.ui.ChatView"
+            icon="icons/perun.png"
+            restorable="true">
+      </view>
+   </extension>
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="com._1c.g5.v8.dt.ui2.perspective">
+         <view
+               id="com.example.edtai.view.chat"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               ratio="0.66"
+               visible="true">
+         </view>
+         <viewShortcut id="com.example.edtai.view.chat"/>
+      </perspectiveExtension>
+   </extension>
+   <extension point="org.eclipse.ui.preferencePages">
+      <page
+            id="com.example.edtai.preferences"
+            name="ПерУН"
+            class="com.example.edtai.ui.preferences.PerunPreferencePage">
+      </page>
+   </extension>
+   <extension point="org.eclipse.ui.startup">
+      <startup class="com.example.edtai.ui.layout.LayoutStartup">
+      </startup>
+   </extension>
+   <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="com.example.edtai.infrastructure.settings.PreferenceDefaults">
+      </initializer>
+   </extension>
+</plugin>

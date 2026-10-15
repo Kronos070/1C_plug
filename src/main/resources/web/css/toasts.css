@@ -1,0 +1,37 @@
+.toasts {
+  position: absolute;
+  right: 14px;
+  bottom: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 340px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  background: var(--elevated);
+  box-shadow: var(--shadow);
+  font-size: 12px;
+  animation: rise .2s var(--ease);
+  transition: opacity .3s var(--ease);
+}
+
+.toast.warning svg {
+  color: var(--warning);
+}
+
+.toast.error svg {
+  color: var(--danger);
+}
+
+.toast.info svg {
+  color: var(--accent);
+}

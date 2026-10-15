@@ -1,0 +1,189 @@
+.block {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  animation: rise .2s var(--ease);
+}
+
+.block-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  color: var(--text-2);
+  font-size: 12px;
+  text-align: left;
+}
+
+.block-head:hover {
+  color: var(--text);
+}
+
+.block-head .name {
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.block-head .args {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
+.block-head .chev {
+  transition: transform .15s var(--ease);
+  color: var(--text-3);
+}
+
+.block.open .chev {
+  transform: rotate(90deg);
+}
+
+.block-body {
+  display: none;
+  border-top: 1px solid var(--border);
+}
+
+.block.open .block-body {
+  display: block;
+}
+
+.block-body pre {
+  margin: 0;
+  max-height: 260px;
+  overflow: auto;
+  padding: 9px 12px;
+  font: 11.5px/1.55 var(--mono);
+  color: var(--text-2);
+  white-space: pre-wrap;
+}
+
+.tool-state.ok {
+  color: var(--success);
+}
+
+.tool-state.fail {
+  color: var(--danger);
+}
+
+.thinking {
+  background: transparent;
+  border-style: dashed;
+}
+
+.thinking .block-body {
+  padding: 8px 12px;
+  color: var(--text-3);
+  font-size: 12.5px;
+  white-space: pre-wrap;
+}
+
+.card {
+  padding: 13px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent-soft);
+  background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--bg);
+  animation: rise .2s var(--ease);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.card-title svg {
+  color: var(--accent);
+}
+
+.card-text {
+  color: var(--text-2);
+  margin-bottom: 11px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.split {
+  display: inline-flex;
+}
+
+.split .btn:first-child {
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.split .split-more {
+  padding: 0 7px;
+  margin-left: 1px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.card-actions .btn {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.card textarea {
+  width: 100%;
+  min-height: 70px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  outline: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 12.5px/1.5 var(--mono);
+  resize: vertical;
+}
+
+.card.resolved {
+  padding: 8px 12px;
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.error-card {
+  display: flex;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: var(--radius);
+  background: var(--danger-soft);
+  color: var(--text);
+  animation: rise .2s var(--ease);
+}
+
+.error-card > span svg {
+  color: var(--danger);
+  margin-top: 2px;
+}
+
+.error-card pre {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: 11.5px/1.5 var(--mono);
+  color: var(--text-2);
+}
+
+.error-card .card-actions {
+  margin-top: 10px;
+}

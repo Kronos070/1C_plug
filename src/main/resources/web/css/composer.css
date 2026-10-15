@@ -1,0 +1,144 @@
+.composer-wrap {
+  flex: none;
+  padding: 6px 18px 14px;
+}
+
+.composer {
+  max-width: var(--column);
+  margin: 0 auto;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+}
+
+.composer:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--glow);
+}
+
+.composer textarea {
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  max-height: 220px;
+  padding: 13px 16px 4px;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: transparent;
+  color: var(--text);
+  font: 13px/1.5 var(--font);
+}
+
+.composer textarea::placeholder {
+  color: var(--text-3);
+}
+
+.composer-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px 8px 10px;
+}
+
+.chips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 8px 0 9px;
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: 12px;
+  white-space: nowrap;
+  min-width: 0;
+  transition: background .15s var(--ease), color .15s var(--ease);
+}
+
+.chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip:hover,
+.chip.open {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.chip.accent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.chip.warn {
+  color: var(--warning);
+}
+
+.chip svg:last-child {
+  opacity: .6;
+}
+
+.send {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: var(--accent-text);
+  flex: none;
+  transition: background .15s var(--ease), transform .1s var(--ease), opacity .15s var(--ease);
+}
+
+.send:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.send:active:not(:disabled) {
+  transform: scale(.94);
+}
+
+.send:disabled {
+  background: var(--surface-3);
+  color: var(--text-3);
+  opacity: 1;
+}
+
+.send.stop {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.composer-hint {
+  max-width: var(--column);
+  margin: 6px auto 0;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+@media (max-width: 440px) {
+  .composer-wrap {
+    padding: 4px 8px 8px;
+  }
+
+  .composer-hint {
+    display: none;
+  }
+
+  .chip span {
+    max-width: 90px;
+  }
+}

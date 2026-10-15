@@ -1,0 +1,73 @@
+:root {
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font: system-ui, -apple-system, "Segoe UI", "Inter", "Ubuntu", "Cantarell", "Noto Sans", sans-serif;
+  --mono: "JetBrains Mono", "Cascadia Code", "Fira Code", "SF Mono", Consolas, "Liberation Mono", monospace;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --column: 780px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--edt-bg, #1e1f22);
+  --surface: rgba(255, 255, 255, .04);
+  --surface-2: rgba(255, 255, 255, .07);
+  --surface-3: rgba(255, 255, 255, .11);
+  --elevated: #2a2c32;
+  --border: rgba(255, 255, 255, .075);
+  --border-strong: rgba(255, 255, 255, .14);
+  --text: #e6e7eb;
+  --text-2: #a8acb6;
+  --text-3: #767b86;
+  --accent: #a3afff;
+  --accent-strong: #8794f5;
+  --accent-soft: rgba(163, 175, 255, .13);
+  --accent-text: #161935;
+  --success: #86d3aa;
+  --warning: #eec27c;
+  --danger: #f09189;
+  --danger-soft: rgba(240, 145, 137, .1);
+  --code-bg: rgba(0, 0, 0, .26);
+  --user-bubble: rgba(163, 175, 255, .12);
+  --shadow: 0 12px 32px rgba(0, 0, 0, .42), 0 0 0 1px rgba(255, 255, 255, .06);
+  --glow: 0 0 0 3px rgba(163, 175, 255, .16);
+  --syn-keyword: #c3a6ff;
+  --syn-string: #9fd7a8;
+  --syn-comment: #6f7480;
+  --syn-number: #f3b77a;
+  --syn-meta: #7fc8e8;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: var(--edt-bg, #f7f7f9);
+  --surface: rgba(20, 24, 40, .035);
+  --surface-2: rgba(20, 24, 40, .06);
+  --surface-3: rgba(20, 24, 40, .09);
+  --elevated: #ffffff;
+  --border: rgba(20, 24, 40, .09);
+  --border-strong: rgba(20, 24, 40, .16);
+  --text: #1c2030;
+  --text-2: #555b6b;
+  --text-3: #8b909c;
+  --accent: #5a6ad8;
+  --accent-strong: #4757c7;
+  --accent-soft: rgba(90, 106, 216, .1);
+  --accent-text: #ffffff;
+  --success: #2c9466;
+  --warning: #b47a1e;
+  --danger: #cf4b3f;
+  --danger-soft: rgba(207, 75, 63, .08);
+  --code-bg: rgba(20, 24, 40, .045);
+  --user-bubble: rgba(90, 106, 216, .09);
+  --shadow: 0 12px 32px rgba(20, 24, 40, .12), 0 0 0 1px rgba(20, 24, 40, .06);
+  --glow: 0 0 0 3px rgba(90, 106, 216, .14);
+  --syn-keyword: #7b4fd6;
+  --syn-string: #2f8a4f;
+  --syn-comment: #8f95a1;
+  --syn-number: #b5651d;
+  --syn-meta: #2b7cae;
+}

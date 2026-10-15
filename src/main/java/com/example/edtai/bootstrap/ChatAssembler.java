@@ -1,0 +1,38 @@
+package com.example.edtai.bootstrap;
+
+import com.example.edtai.application.ChatPorts;
+import com.example.edtai.application.ChatService;
+import com.example.edtai.application.port.ChatOutput;
+import com.example.edtai.infrastructure.auth.AuthFileStore;
+import com.example.edtai.infrastructure.files.WorkspaceFiles;
+import com.example.edtai.infrastructure.mock.MockAgentGateway;
+import com.example.edtai.infrastructure.mock.MockCredentialStore;
+import com.example.edtai.infrastructure.process.ExecutableLocator;
+import com.example.edtai.infrastructure.process.LaunchSpecFactory;
+import com.example.edtai.infrastructure.rpc.PerunGateway;
+import com.example.edtai.infrastructure.session.FileSessionCatalog;
+import com.example.edtai.infrastructure.settings.PluginSettings;
+import com.example.edtai.infrastructure.settings.PreferencePermissionStore;
+import com.example.edtai.infrastructure.settings.WorkspaceLocator;
+import java.nio.file.Path;
+
+public final class ChatAssembler {
+
+    private ChatAssembler() {
+    }
+
+    public static ChatService assemble(PluginSettings settings, ChatOutput output) {
+        // Собирает сервис чата по настройкам
+        Path root = WorkspaceLocator.resolve(settings.workDirectory());
+        WorkspaceFiles files = new WorkspaceFiles(root);
+        if (settings.demoMode()) {
+            MockAgentGateway mock = new MockAgentGateway();
+            return new ChatService(new ChatPorts(mock, mock.catalog(), new MockCredentialStore(), files,
+                    new PreferencePermissionStore()), output);
+        }
+        LaunchSpecFactory factory = new LaunchSpecFactory(new ExecutableLocator());
+        PerunGateway gateway = new PerunGateway(() -> factory.create(settings.command(), settings.arguments(), root));
+        return new ChatService(new ChatPorts(gateway, new FileSessionCatalog(), new AuthFileStore(), files,
+                new PreferencePermissionStore()), output);
+    }
+}
