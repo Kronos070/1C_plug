@@ -1,12 +1,15 @@
 package com.example.edtai.application;
 
 import com.example.edtai.application.port.AgentUnavailableException;
+import com.example.edtai.application.port.CallerSearch;
 import com.example.edtai.application.port.DocsGateway;
+import com.example.edtai.domain.DocCaller;
 import com.example.edtai.domain.DocCase;
 import com.example.edtai.domain.DocNoteDraft;
 import com.example.edtai.domain.DocSection;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -16,9 +19,11 @@ public final class DocsService {
     private static final int SEARCH_LIMIT = 30;
 
     private final Supplier<DocsGateway> gateway;
+    private final CallerSearch callers;
 
-    public DocsService(Supplier<DocsGateway> gateway) {
+    public DocsService(Supplier<DocsGateway> gateway, CallerSearch callers) {
         this.gateway = gateway;
+        this.callers = callers;
     }
 
     public boolean available() {
@@ -86,6 +91,16 @@ public final class DocsService {
     public CompletableFuture<JsonObject> remove(String id) {
         // Удаляет описание записи
         return call("docs.remove", idParams(id));
+    }
+
+    public CompletableFuture<List<DocCaller>> callers(String id, boolean exported) {
+        // Ищет методы, вызывающие символ
+        int hash = id.indexOf('#');
+        if (hash < 0) {
+            return CompletableFuture.completedFuture(List.of());
+        }
+        return CompletableFuture.supplyAsync(() -> callers.callers(id.substring(0, hash), id.substring(hash + 1),
+                exported));
     }
 
     private CompletableFuture<JsonObject> call(String method, JsonObject params) {

@@ -3,6 +3,7 @@ package com.example.edtai.infrastructure.mock;
 import com.example.edtai.application.port.DocsGateway;
 import com.example.edtai.infrastructure.rpc.JsonFields;
 import com.google.gson.JsonObject;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
@@ -11,6 +12,7 @@ public final class MockDocsGateway implements DocsGateway {
     private static final MockDocsGateway SHARED = new MockDocsGateway();
     private static final int DEFAULT_LIMIT = 30;
 
+    private volatile Path root = Path.of("");
     private MockDocsData data;
     private MockDocsTree tree;
     private MockDocsPages pages;
@@ -27,6 +29,17 @@ public final class MockDocsGateway implements DocsGateway {
     public boolean supported() {
         // Демо-режим всегда поддерживает документацию
         return true;
+    }
+
+    @Override
+    public Path workDirectory() {
+        // Возвращает каталог демо-проекта
+        return root;
+    }
+
+    public void root(Path value) {
+        // Запоминает каталог демо-проекта
+        root = value;
     }
 
     @Override

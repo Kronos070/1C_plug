@@ -83,6 +83,10 @@
             P.copy(reply.text(), copyButton);
           });
           actions.append(copyButton);
+          const sources = P.sources.render(order);
+          if (sources) {
+            body.append(sources);
+          }
           body.append(actions);
           P.rating.attach(el, actions, reply.text);
         }

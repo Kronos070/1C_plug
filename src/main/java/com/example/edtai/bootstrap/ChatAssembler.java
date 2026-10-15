@@ -8,6 +8,7 @@ import com.example.edtai.infrastructure.files.WorkspaceFiles;
 import com.example.edtai.infrastructure.marks.MarkerWriter;
 import com.example.edtai.infrastructure.mock.MockAgentGateway;
 import com.example.edtai.infrastructure.mock.MockCredentialStore;
+import com.example.edtai.infrastructure.mock.MockDocsGateway;
 import com.example.edtai.infrastructure.process.ExecutableLocator;
 import com.example.edtai.infrastructure.process.LaunchSpecFactory;
 import com.example.edtai.infrastructure.rpc.PerunGateway;
@@ -31,6 +32,7 @@ public final class ChatAssembler {
         MarkerWriter marks = new MarkerWriter(AnnotationSync::refresh);
         if (settings.demoMode()) {
             MockAgentGateway mock = new MockAgentGateway();
+            MockDocsGateway.shared().root(root);
             FeedbackAssembler.registerGateway(mock);
             return new ChatService(new ChatPorts(mock, mock.catalog(), new MockCredentialStore(), files,
                     new PreferencePermissionStore(), marks, FeedbackAssembler.rules()), output);

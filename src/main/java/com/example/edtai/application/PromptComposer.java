@@ -18,8 +18,8 @@ final class PromptComposer {
     }
 
     static String compose(String text, Optional<CodeContext> context, String rules) {
-        // Оставляет промпт чистым без внедрения правил проекта
-        return compose(text, context);
+        // Добавляет к сообщению правила и код
+        return compose(rules.isEmpty() ? text : text + "\n\n" + rules, context);
     }
 
     private static String block(CodeContext context) {

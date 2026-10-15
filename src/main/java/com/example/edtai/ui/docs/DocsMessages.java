@@ -1,7 +1,9 @@
 package com.example.edtai.ui.docs;
 
+import com.example.edtai.domain.DocCaller;
 import com.example.edtai.domain.DocCase;
 import com.example.edtai.domain.DocNoteDraft;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
@@ -57,6 +59,27 @@ final class DocsMessages {
         json.addProperty("level", level);
         json.addProperty("text", text);
         return json;
+    }
+
+    static JsonObject callers(List<DocCaller> callers) {
+        // Переводит вызывающие методы в JSON
+        JsonArray items = new JsonArray();
+        for (DocCaller caller : callers) {
+            JsonObject item = new JsonObject();
+            item.addProperty("id", caller.id());
+            item.addProperty("name", caller.name());
+            item.addProperty("path", caller.path());
+            item.addProperty("line", caller.line());
+            items.add(item);
+        }
+        JsonObject data = new JsonObject();
+        data.add("items", items);
+        return data;
+    }
+
+    static boolean flag(JsonObject command, String key) {
+        // Читает логическое поле команды
+        return command.has(key) && command.get(key).isJsonPrimitive() && command.get(key).getAsBoolean();
     }
 
     static DocNoteDraft draft(JsonObject command) {

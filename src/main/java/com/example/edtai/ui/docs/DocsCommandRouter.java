@@ -39,6 +39,8 @@ final class DocsCommandRouter implements Consumer<JsonObject> {
             case "docsSearch" -> deliver("search", DocsMessages.text(command, "query"), service.search(
                     DocsMessages.text(command, "query"), DocSection.fromId(DocsMessages.text(command, "kind"))));
             case "docsOutdated" -> deliver("outdated", "", service.outdated());
+            case "docsCallers" -> deliver("callers", id, service.callers(id, DocsMessages.flag(command, "exported"))
+                    .thenApply(DocsMessages::callers));
             case "docsSave" -> deliver("saved", id, service.save(id, DocsMessages.draft(command)));
             case "docsRemove" -> deliver("saved", id, service.remove(id));
             case "docsOpenSource" -> CodeOpener.open(DocsMessages.text(command, "path"),

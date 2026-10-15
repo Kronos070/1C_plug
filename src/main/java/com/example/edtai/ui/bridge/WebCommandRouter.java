@@ -2,6 +2,7 @@ package com.example.edtai.ui.bridge;
 
 import com.example.edtai.application.ChatService;
 import com.example.edtai.application.FeedbackService;
+import com.example.edtai.bootstrap.DocsAssembler;
 import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.AiProvenance;
 import com.example.edtai.domain.ChatEvent;
@@ -27,9 +28,12 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
     private final Runnable restart;
     private final Shell shell;
     private final ChatFeedback feedback;
+    private final Consumer<JsonObject> post;
 
     public WebCommandRouter(Supplier<ChatService> service, Function<String, Optional<CodeContext>> contexts,
-            Runnable restart, Shell shell, FeedbackService feedback, Consumer<ChatEvent> notify) {
+            Runnable restart, Shell shell, FeedbackService feedback, Consumer<ChatEvent> notify,
+            Consumer<JsonObject> post) {
+        this.post = post;
         this.service = service;
         this.contexts = contexts;
         this.restart = restart;
@@ -44,6 +48,7 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
         switch (action) {
             case "copy" -> ClipboardText.copy(shell, text(command, "text"));
             case "docs" -> DocsOpener.open(text(command, "id"));
+            case "docsPeek" -> DocsPeek.peek(DocsAssembler.service(), command.get("ids"), text(command, "key"), post);
             case "link" -> openLink(text(command, "url"));
             case "settings" -> openSettings();
             case "retry" -> restart.run();

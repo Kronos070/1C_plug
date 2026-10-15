@@ -63,7 +63,7 @@ public final class ChatView extends ViewPart {
         bridge = new WebBridge(browser);
         contexts = new EditorContextTracker(getSite().getPage(), bridge::context);
         bridge.onCommand(new WebCommandRouter(() -> service, contexts::resolve, this::scheduleRestart,
-                parent.getShell(), FeedbackAssembler.service(), bridge::render));
+                parent.getShell(), FeedbackAssembler.service(), bridge::render, bridge::post));
         browser.setText(PageAssembler.assemble(EdtPalette.from(parent).prefer(settings.load().theme())));
         theme = new ThemeWatcher(parent, getSite().getService(IEventBroker.class),
                 palette -> bridge.theme(palette.prefer(settings.load().theme())));

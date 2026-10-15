@@ -74,7 +74,8 @@ public final class ChatService implements AgentListener {
         }
         AgentState current = state;
         recorder.remember(text.strip());
-        sender.send(PromptComposer.compose(text.strip(), context), mode.filter(value -> current != null
+        String ruleBlock = RuleBook.block(rules.rules(), text, context);
+        sender.send(PromptComposer.compose(text.strip(), context, ruleBlock), mode.filter(value -> current != null
                 && current.modesSupported() && current.mode() != value));
     }
 

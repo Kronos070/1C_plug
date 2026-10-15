@@ -32,6 +32,10 @@
         P.docsApp.crumbs(event.data.page);
       }
     },
+    callers: function (event) {
+      // Передает вызывающие методы графу
+      P.docGraph.accept(event.key, event.data);
+    },
     search: function (event) {
       // Показывает результаты поиска
       P.docSearch.accept(event.key, event.data);
@@ -70,7 +74,7 @@
     }
     if (event.kind === "page" && event.key === P.docs.current) {
       if (/не найден/i.test(event.text)) {
-        P.docsApp.toast("warning", "Запись удалена в новом коммите");
+        P.docsApp.toast("warning", "Этой записи нет в документации: метод удалён или ещё не закоммичен");
         P.docTree.reset();
         P.docsApp.navigate("", false);
         return;

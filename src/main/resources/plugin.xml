@@ -101,6 +101,10 @@
          </state>
       </command>
       <command
+            id="com.example.edtai.openDocs"
+            name="Открыть в документации ПерУН">
+      </command>
+      <command
             id="com.example.edtai.askCode"
             name="Спросить ПерУН о коде">
          <commandParameter
@@ -118,6 +122,10 @@
       <handler
             commandId="com.example.edtai.toggleMarks"
             class="com.example.edtai.ui.marks.ToggleMarksHandler">
+      </handler>
+      <handler
+            commandId="com.example.edtai.openDocs"
+            class="com.example.edtai.ui.docs.OpenDocsHandler">
       </handler>
       <handler
             commandId="com.example.edtai.askCode"
@@ -151,6 +159,11 @@
                   style="push">
                <parameter name="com.example.edtai.codeAction" value="refactor"/>
             </command>
+            <command
+                  commandId="com.example.edtai.openDocs"
+                  label="Открыть в документации"
+                  style="push">
+            </command>
             <separator name="perun.feedback" visible="true"/>
             <command commandId="com.example.edtai.feedback" label="Отзыв о коде Перуна…" style="push">
                <parameter name="com.example.edtai.feedbackOrigin" value="selection"/>
@@ -183,6 +196,11 @@
                   label="Улучшить код"
                   style="push">
                <parameter name="com.example.edtai.codeAction" value="refactor"/>
+            </command>
+            <command
+                  commandId="com.example.edtai.openDocs"
+                  label="Открыть в документации"
+                  style="push">
             </command>
             <separator name="perun.feedback" visible="true"/>
             <command commandId="com.example.edtai.feedback" label="Отзыв о коде Перуна…" style="push">

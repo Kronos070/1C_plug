@@ -109,7 +109,7 @@ final class MockDocsPages {
             JsonObject member = new JsonObject();
             member.addProperty("id", id + "#" + JsonFields.text(symbol, "name"));
             member.addProperty("kind", JsonFields.text(symbol, "kind"));
-            member.addProperty("title", JsonFields.text(symbol, "name"));
+            member.addProperty("name", JsonFields.text(symbol, "name"));
             member.addProperty("line", JsonFields.number(symbol, "line"));
             member.addProperty("isExport", JsonFields.flag(symbol, "isExport"));
             member.addProperty("summary", JsonFields.text(JsonFields.object(symbol, "note"), "summary"));

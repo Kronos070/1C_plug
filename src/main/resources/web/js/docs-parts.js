@@ -56,7 +56,7 @@
 
     calls: function (list) {
       // Строит чипы вызываемых методов
-      if (!list || !list.length) {
+      if (!list || !list.length || (P.docs.page && P.docs.page.kind !== "module")) {
         return null;
       }
       return section("Вызывает", P.h("div", { class: "chips" }, list.map(function (name) {
@@ -74,7 +74,7 @@
       return section("Состав модуля", P.h("div", { class: "members" }, list.map(function (item) {
         return P.h("a", { class: "member" + (item.stale ? " stale" : ""), "data-doc": item.id }, [
           P.docKinds.icon(item.kind, 14),
-          P.h("span", { class: "member-text" }, [P.h("strong", { text: item.title }),
+          P.h("span", { class: "member-text" }, [P.h("strong", { text: item.name || item.title }),
             P.h("span", { text: item.summary || "Описания пока нет" })]),
         ].concat(P.docKinds.marks(item)));
       })), P.h("span", { class: "cases-count", text: String(list.length) }));

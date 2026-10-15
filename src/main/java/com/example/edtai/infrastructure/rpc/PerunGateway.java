@@ -29,7 +29,7 @@ public final class PerunGateway implements AgentGateway {
     private final LaunchSpecSource source;
     private final RpcEventTranslator translator = new RpcEventTranslator();
     private final RpcWriteTracker writes = new RpcWriteTracker();
-    private final RpcDocsGateway docs = new RpcDocsGateway(() -> this.rpc);
+    private final RpcDocsGateway docs = new RpcDocsGateway(() -> this.rpc, () -> this.spec);
     private volatile LaunchSpec spec;
     private volatile AgentProcess process;
     private volatile RpcConnection rpc;

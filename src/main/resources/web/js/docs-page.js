@@ -18,7 +18,7 @@
       const parts = P.docParts;
       [head(page), page.signature ? P.h("pre", { class: "page-signature", html: P.highlight(page.signature, "bsl") })
         : null, meta(page), page.note && page.note.stale ? staleNote(page) : null, parts.description(page),
-      parts.cases(page.note), parts.parameters(page.parameters), parts.comment(page.comment),
+      parts.cases(page.note), P.docGraph.section(page), parts.parameters(page.parameters), parts.comment(page.comment),
       parts.calls(page.calls), parts.members(page.members)].forEach(function (part) {
         if (part) {
           article.append(part);
@@ -57,6 +57,9 @@
         button("sparkle", "Спросить ПерУН", function () {
           P.docPage.ask(page);
         }),
+        page.note ? button("alert", "Описание неверно", function () {
+          P.docDispute.open(page, document.querySelector(".page-head"));
+        }) : null,
       ])]),
     ]);
   }
@@ -77,7 +80,8 @@
   function staleNote(page) {
     // Предупреждает об устаревшем описании
     return P.h("div", { class: "page-note warn" }, [P.h("span", { html: P.icon("alert", 16) }),
-      P.h("span", { text: "Код изменился после того, как писалось описание. Проверьте его или попросите ПерУН обновить." }),
+      P.h("span", { text: "Код изменился после того, как писалось описание. " +
+        "Проверьте его или попросите ПерУН обновить." }),
       P.h("button", { class: "btn", type: "button", text: "Обновить с ПерУН", onclick: function () {
         P.docPage.ask(page);
       } })]);

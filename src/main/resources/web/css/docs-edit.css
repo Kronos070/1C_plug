@@ -57,6 +57,23 @@ textarea.edit-field {
   font-size: 12px;
 }
 
+.dispute {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--warning);
+  background: rgba(238, 194, 124, .08);
+}
+
+.dispute p {
+  margin: 2px 0 10px;
+  font-size: 12px;
+}
+
+.dispute .page-actions {
+  margin-top: 10px;
+}
+
 @media (max-width: 640px) {
   .case-row {
     grid-template-columns: 1fr auto;

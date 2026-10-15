@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PerUN AI Assistant for 1C:EDT
 Bundle-SymbolicName: com.example.edtai;singleton:=true
-Bundle-Version: 1.0.15
+Bundle-Version: 1.0.17
 Bundle-Vendor: PerUN
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy

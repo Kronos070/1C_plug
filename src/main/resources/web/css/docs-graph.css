@@ -1,0 +1,54 @@
+.graph {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.graph-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font: 12px var(--font);
+}
+
+.graph-edge {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1.4;
+}
+
+.graph-node rect {
+  fill: var(--surface-2);
+  stroke: var(--border-strong);
+}
+
+.graph-node text {
+  fill: var(--text);
+}
+
+.graph-node.caller,
+.graph-node.callee {
+  cursor: pointer;
+}
+
+.graph-node.caller:hover rect,
+.graph-node.callee:hover rect {
+  stroke: var(--accent);
+  fill: var(--accent-soft);
+}
+
+.graph-node.center rect {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+.graph-node.center text {
+  font-weight: 600;
+}
+
+.graph-node.more text,
+.graph-empty {
+  fill: var(--text-3);
+}
