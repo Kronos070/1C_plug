@@ -1,9 +1,13 @@
 package com.example.edtai.ui.bridge;
 
 import com.example.edtai.application.ChatService;
+import com.example.edtai.application.FeedbackService;
 import com.example.edtai.domain.AgentMode;
+import com.example.edtai.domain.AiProvenance;
+import com.example.edtai.domain.ChatEvent;
 import com.example.edtai.domain.CodeContext;
 import com.example.edtai.domain.UiAnswer;
+import com.example.edtai.ui.feedback.EditorInserter;
 import com.google.gson.JsonObject;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -24,13 +28,15 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
     private final Function<String, Optional<CodeContext>> contexts;
     private final Runnable restart;
     private final Shell shell;
+    private final ChatFeedback feedback;
 
     public WebCommandRouter(Supplier<ChatService> service, Function<String, Optional<CodeContext>> contexts,
-            Runnable restart, Shell shell) {
+            Runnable restart, Shell shell, FeedbackService feedback, Consumer<ChatEvent> notify) {
         this.service = service;
         this.contexts = contexts;
         this.restart = restart;
         this.shell = shell;
+        this.feedback = new ChatFeedback(feedback, notify);
     }
 
     @Override
@@ -42,6 +48,10 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
             case "link" -> openLink(text(command, "url"));
             case "settings" -> openSettings();
             case "retry" -> restart.run();
+            case "insert" -> EditorInserter.insert(text(command, "code"), provenance(command, "insert"))
+                    .ifPresent(feedback::warn);
+            case "rateChat" -> feedback.rate(text(command, "rating"), text(command, "comment"),
+                    text(command, "answer"), provenance(command, "chat"));
             default -> dispatch(action, command);
         }
     }
@@ -68,6 +78,11 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
             default -> {
             }
         }
+    }
+
+    private static AiProvenance provenance(JsonObject command, String source) {
+        // Собирает происхождение кода из команды
+        return new AiProvenance(text(command, "model"), text(command, "prompt"), source);
     }
 
     private UiAnswer answer(JsonObject command) {

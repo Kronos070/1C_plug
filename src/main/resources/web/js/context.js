@@ -46,6 +46,7 @@
 
     parse: function (text) {
       // Отделяет прикрепленный код от вопроса
+      text = text.replace(/\n\n<project-rules>[\s\S]*?<\/project-rules>/, "");
       const match = BLOCK.exec(text);
       if (!match) {
         return { text: text, context: null };

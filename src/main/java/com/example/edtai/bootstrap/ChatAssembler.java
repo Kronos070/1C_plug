@@ -5,6 +5,7 @@ import com.example.edtai.application.ChatService;
 import com.example.edtai.application.port.ChatOutput;
 import com.example.edtai.infrastructure.auth.AuthFileStore;
 import com.example.edtai.infrastructure.files.WorkspaceFiles;
+import com.example.edtai.infrastructure.marks.MarkerWriter;
 import com.example.edtai.infrastructure.mock.MockAgentGateway;
 import com.example.edtai.infrastructure.mock.MockCredentialStore;
 import com.example.edtai.infrastructure.process.ExecutableLocator;
@@ -14,6 +15,7 @@ import com.example.edtai.infrastructure.session.FileSessionCatalog;
 import com.example.edtai.infrastructure.settings.PluginSettings;
 import com.example.edtai.infrastructure.settings.PreferencePermissionStore;
 import com.example.edtai.infrastructure.settings.WorkspaceLocator;
+import com.example.edtai.ui.marks.AnnotationSync;
 import java.nio.file.Path;
 
 public final class ChatAssembler {
@@ -25,14 +27,15 @@ public final class ChatAssembler {
         // Собирает сервис чата по настройкам
         Path root = WorkspaceLocator.resolve(settings.workDirectory());
         WorkspaceFiles files = new WorkspaceFiles(root);
+        MarkerWriter marks = new MarkerWriter(AnnotationSync::refresh);
         if (settings.demoMode()) {
             MockAgentGateway mock = new MockAgentGateway();
             return new ChatService(new ChatPorts(mock, mock.catalog(), new MockCredentialStore(), files,
-                    new PreferencePermissionStore()), output);
+                    new PreferencePermissionStore(), marks, FeedbackAssembler.rules()), output);
         }
         LaunchSpecFactory factory = new LaunchSpecFactory(new ExecutableLocator());
         PerunGateway gateway = new PerunGateway(() -> factory.create(settings.command(), settings.arguments(), root));
         return new ChatService(new ChatPorts(gateway, new FileSessionCatalog(), new AuthFileStore(), files,
-                new PreferencePermissionStore()), output);
+                new PreferencePermissionStore(), marks, FeedbackAssembler.rules()), output);
     }
 }

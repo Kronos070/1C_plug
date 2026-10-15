@@ -1,0 +1,28 @@
+.code-tools {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.rate-form:empty {
+  display: none;
+}
+
+.rate-form {
+  margin-top: 6px;
+}
+
+.rate-form .rate-text {
+  width: 100%;
+  height: 60px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  resize: vertical;
+}
+
+.msg-actions .icon-btn.active {
+  color: var(--accent);
+}
+
+.msg-actions.rated {
+  opacity: 1;
+}

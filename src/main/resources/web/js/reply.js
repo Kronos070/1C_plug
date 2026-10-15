@@ -84,6 +84,7 @@
           });
           actions.append(copyButton);
           body.append(actions);
+          P.rating.attach(el, actions, reply.text);
         }
       },
     };

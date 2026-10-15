@@ -27,6 +27,11 @@
       if (copyCode) {
         P.copy(copyCode.closest(".code").querySelector("code").textContent, copyCode);
       }
+      const insertCode = event.target.closest("[data-insert-code]");
+      if (insertCode) {
+        P.post("insert", { code: insertCode.closest(".code").querySelector("code").textContent,
+          prompt: P.rating.question(insertCode), model: P.state.model ? P.state.model.key : "" });
+      }
     });
   }
 

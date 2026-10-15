@@ -27,6 +27,7 @@ public final class PerunGateway implements AgentGateway {
 
     private final LaunchSpecSource source;
     private final RpcEventTranslator translator = new RpcEventTranslator();
+    private final RpcWriteTracker writes = new RpcWriteTracker();
     private volatile LaunchSpec spec;
     private volatile AgentProcess process;
     private volatile RpcConnection rpc;
@@ -169,6 +170,7 @@ public final class PerunGateway implements AgentGateway {
             }
             listener.onEvent(event);
         });
+        writes.track(record, spec.workDirectory()).ifPresent(listener::onEvent);
     }
 
     private void onClosed() {

@@ -28,6 +28,9 @@ public sealed interface ChatEvent {
     record FilesFound(String query, List<String> paths) implements ChatEvent {
     }
 
+    record CodeWritten(String path, List<String> snippets) implements ChatEvent {
+    }
+
     record Working() implements ChatEvent {
     }
 

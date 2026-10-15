@@ -17,5 +17,7 @@ public final class PreferenceDefaults extends AbstractPreferenceInitializer {
         defaults.put(PreferenceKeys.THEME, "auto");
         defaults.put(PreferenceKeys.ALLOWED_TOOLS, "");
         defaults.put(PreferenceKeys.DENIED_TOOLS, "");
+        defaults.put(PreferenceKeys.FEEDBACK_DIRECTORY, "");
+        defaults.putBoolean(PreferenceKeys.MARKS_VISIBLE, true);
     }
 }

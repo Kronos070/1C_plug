@@ -38,11 +38,59 @@
       <startup class="com.example.edtai.ui.layout.LayoutStartup">
       </startup>
    </extension>
+   <extension id="aiFragment" name="Код Перуна" point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.textmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            name="com.example.edtai.aiFragment"
+            markerType="com.example.edtai.aiFragment">
+      </type>
+   </extension>
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="com.example.edtai.aiFragment"
+            label="Код Перуна"
+            icon="icons/ai-mark.png"
+            annotationImageProvider="com.example.edtai.ui.marks.AiAnnotationImages"
+            colorPreferenceKey="perunAiColor"
+            colorPreferenceValue="200,206,250"
+            highlightPreferenceKey="perunAiHighlight"
+            highlightPreferenceValue="true"
+            verticalRulerPreferenceKey="perunAiRuler"
+            verticalRulerPreferenceValue="true"
+            overviewRulerPreferenceKey="perunAiOverview"
+            overviewRulerPreferenceValue="true"
+            textPreferenceKey="perunAiText"
+            textPreferenceValue="false"
+            includeOnPreferencePage="true"
+            presentationLayer="2">
+      </specification>
+   </extension>
+   <extension point="org.eclipse.ui.startup">
+      <startup class="com.example.edtai.ui.marks.MarksStartup">
+      </startup>
+   </extension>
    <extension point="org.eclipse.core.runtime.preferences">
       <initializer class="com.example.edtai.infrastructure.settings.PreferenceDefaults">
       </initializer>
    </extension>
    <extension point="org.eclipse.ui.commands">
+      <command
+            id="com.example.edtai.feedback"
+            name="Отзыв о коде Перуна">
+         <commandParameter id="com.example.edtai.feedbackKind" name="Оценка" optional="true"/>
+         <commandParameter id="com.example.edtai.feedbackOrigin" name="Источник" optional="true"/>
+      </command>
+      <command
+            id="com.example.edtai.toggleMarks"
+            name="Подсвечивать код Перуна">
+         <state
+               id="org.eclipse.ui.commands.toggleState"
+               class="org.eclipse.ui.handlers.RegistryToggleState:true">
+         </state>
+      </command>
       <command
             id="com.example.edtai.askCode"
             name="Спросить ПерУН о коде">
@@ -54,6 +102,14 @@
       </command>
    </extension>
    <extension point="org.eclipse.ui.handlers">
+      <handler
+            commandId="com.example.edtai.feedback"
+            class="com.example.edtai.ui.feedback.FeedbackHandler">
+      </handler>
+      <handler
+            commandId="com.example.edtai.toggleMarks"
+            class="com.example.edtai.ui.marks.ToggleMarksHandler">
+      </handler>
       <handler
             commandId="com.example.edtai.askCode"
             class="com.example.edtai.ui.context.AskCodeHandler">
@@ -86,6 +142,11 @@
                   style="push">
                <parameter name="com.example.edtai.codeAction" value="refactor"/>
             </command>
+            <separator name="perun.feedback" visible="true"/>
+            <command commandId="com.example.edtai.feedback" label="Отзыв о коде Перуна…" style="push">
+               <parameter name="com.example.edtai.feedbackOrigin" value="selection"/>
+            </command>
+            <command commandId="com.example.edtai.toggleMarks" label="Подсвечивать код Перуна" style="toggle"/>
          </menu>
       </menuContribution>
       <menuContribution locationURI="popup:#TextEditorContext?after=additions">
@@ -114,6 +175,32 @@
                   style="push">
                <parameter name="com.example.edtai.codeAction" value="refactor"/>
             </command>
+            <separator name="perun.feedback" visible="true"/>
+            <command commandId="com.example.edtai.feedback" label="Отзыв о коде Перуна…" style="push">
+               <parameter name="com.example.edtai.feedbackOrigin" value="selection"/>
+            </command>
+            <command commandId="com.example.edtai.toggleMarks" label="Подсвечивать код Перуна" style="toggle"/>
+         </menu>
+      </menuContribution>
+      <menuContribution locationURI="popup:#TextRulerContext?after=additions">
+         <menu id="com.example.edtai.menu.ruler" label="Перун" icon="icons/perun.png">
+            <visibleWhen checkEnabled="false">
+               <with variable="activeEditorId">
+                  <equals value="com._1c.g5.v8.dt.bsl.Bsl"/>
+               </with>
+            </visibleWhen>
+            <command commandId="com.example.edtai.feedback" label="👍 Хороший код" style="push">
+               <parameter name="com.example.edtai.feedbackKind" value="like"/>
+               <parameter name="com.example.edtai.feedbackOrigin" value="ruler"/>
+            </command>
+            <command commandId="com.example.edtai.feedback" label="👎 Плохой код" style="push">
+               <parameter name="com.example.edtai.feedbackKind" value="dislike"/>
+               <parameter name="com.example.edtai.feedbackOrigin" value="ruler"/>
+            </command>
+            <command commandId="com.example.edtai.feedback" label="Отзыв о коде Перуна…" style="push">
+               <parameter name="com.example.edtai.feedbackOrigin" value="ruler"/>
+            </command>
+            <command commandId="com.example.edtai.toggleMarks" label="Подсвечивать код Перуна" style="toggle"/>
          </menu>
       </menuContribution>
    </extension>

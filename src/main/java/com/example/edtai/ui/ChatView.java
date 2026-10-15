@@ -2,6 +2,7 @@ package com.example.edtai.ui;
 
 import com.example.edtai.application.ChatService;
 import com.example.edtai.bootstrap.ChatAssembler;
+import com.example.edtai.bootstrap.FeedbackAssembler;
 import com.example.edtai.domain.CodeAction;
 import com.example.edtai.domain.CodeContext;
 import com.example.edtai.infrastructure.settings.PreferenceKeys;
@@ -62,7 +63,7 @@ public final class ChatView extends ViewPart {
         bridge = new WebBridge(browser);
         contexts = new EditorContextTracker(getSite().getPage(), bridge::context);
         bridge.onCommand(new WebCommandRouter(() -> service, contexts::resolve, this::scheduleRestart,
-                parent.getShell()));
+                parent.getShell(), FeedbackAssembler.service(), bridge::render));
         browser.setText(PageAssembler.assemble(EdtPalette.from(parent).prefer(settings.load().theme())));
         theme = new ThemeWatcher(parent, getSite().getService(IEventBroker.class),
                 palette -> bridge.theme(palette.prefer(settings.load().theme())));
@@ -121,7 +122,7 @@ public final class ChatView extends ViewPart {
 
     private void onSettingChanged(String key) {
         // Реагирует на изменение настройки
-        if (key.startsWith("permissions.")) {
+        if (key.startsWith("permissions.") || key.startsWith("feedback.") || key.startsWith("marks.")) {
             return;
         }
         if (PreferenceKeys.THEME.equals(key)) {
