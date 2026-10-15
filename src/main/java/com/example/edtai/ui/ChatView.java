@@ -86,6 +86,15 @@ public final class ChatView extends ViewPart {
         bridge.ask(action, context);
     }
 
+    public void prompt(String text) {
+        // Отправляет текстовый запрос в чат
+        if (bridge == null) {
+            pendingAsk = () -> prompt(text);
+            return;
+        }
+        bridge.prompt(text);
+    }
+
     @Override
     public void setFocus() {
         // Передает фокус полю ввода

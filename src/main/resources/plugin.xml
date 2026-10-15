@@ -15,6 +15,15 @@
             restorable="true">
       </view>
    </extension>
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="com.example.edtai.editor.docs"
+            name="Документация ПерУН"
+            icon="icons/perun.png"
+            class="com.example.edtai.ui.docs.DocsEditor"
+            default="false">
+      </editor>
+   </extension>
    <extension point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="com._1c.g5.v8.dt.ui2.perspective">
          <view

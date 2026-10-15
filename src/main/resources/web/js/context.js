@@ -108,9 +108,11 @@
   });
 
   P.on("ask", function (event) {
-    current = event.context;
-    dismissed.delete(current.id);
-    render();
+    if (event.context) {
+      current = event.context;
+      dismissed.delete(current.id);
+      render();
+    }
     pendingAsk = event;
     if (!ready()) {
       P.toast("info", P.state.streaming ? "Запрос будет отправлен после текущего ответа"

@@ -38,6 +38,8 @@ public interface AgentGateway {
 
     CompletableFuture<Void> submitFeedback(Feedback feedback);
 
+    DocsGateway docs();
+
     void answer(UiAnswer answer);
 
     SessionTools tools();

@@ -84,6 +84,11 @@ final class EventSerializer {
                 .put("context", JsonViews.context(context)).json;
     }
 
+    static JsonObject prompt(String text) {
+        // Переводит текстовый запрос в JSON
+        return typed("ask").with("text", text).with("mode", "").put("context", JsonNull.INSTANCE).json;
+    }
+
     private static Builder typed(String type) {
         // Создает JSON с типом события
         return new Builder().with("type", type);

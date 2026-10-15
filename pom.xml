@@ -5,7 +5,7 @@
 
     <groupId>com.example</groupId>
     <artifactId>edt-ai-plugin</artifactId>
-    <version>1.0.14</version>
+    <version>1.0.15</version>
     <packaging>jar</packaging>
 
     <name>EDT AI Assistant</name>
@@ -143,6 +143,13 @@
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.ui.editors</artifactId>
             <version>3.17.100</version>
+            <scope>provided</scope>
+            <exclusions><exclusion><groupId>*</groupId><artifactId>*</artifactId></exclusion></exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.ui.ide</artifactId>
+            <version>3.22.0</version>
             <scope>provided</scope>
             <exclusions><exclusion><groupId>*</groupId><artifactId>*</artifactId></exclusion></exclusions>
         </dependency>

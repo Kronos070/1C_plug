@@ -7,15 +7,13 @@ import com.example.edtai.domain.AiProvenance;
 import com.example.edtai.domain.ChatEvent;
 import com.example.edtai.domain.CodeContext;
 import com.example.edtai.domain.UiAnswer;
+import com.example.edtai.ui.docs.DocsOpener;
 import com.example.edtai.ui.feedback.EditorInserter;
 import com.google.gson.JsonObject;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -44,7 +42,8 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
         // Выполняет команду со страницы
         String action = text(command, "action");
         switch (action) {
-            case "copy" -> copy(text(command, "text"));
+            case "copy" -> ClipboardText.copy(shell, text(command, "text"));
+            case "docs" -> DocsOpener.open(text(command, "id"));
             case "link" -> openLink(text(command, "url"));
             case "settings" -> openSettings();
             case "retry" -> restart.run();
@@ -95,19 +94,6 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
             return UiAnswer.confirm(id, command.get("confirmed").getAsBoolean());
         }
         return UiAnswer.value(id, text(command, "value"));
-    }
-
-    private void copy(String value) {
-        // Копирует текст в буфер обмена
-        if (value.isEmpty() || shell.isDisposed()) {
-            return;
-        }
-        Clipboard clipboard = new Clipboard(shell.getDisplay());
-        try {
-            clipboard.setContents(new Object[] {value}, new Transfer[] {TextTransfer.getInstance()});
-        } finally {
-            clipboard.dispose();
-        }
     }
 
     private void openLink(String url) {

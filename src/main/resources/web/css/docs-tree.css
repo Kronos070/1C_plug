@@ -1,0 +1,182 @@
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px 0 calc(6px + var(--depth, 0) * 14px);
+  border-radius: 6px;
+  color: var(--text-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tree-row:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.tree-row.active {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.tree-row.active .tree-label {
+  font-weight: 600;
+}
+
+.tree-row.flat {
+  height: auto;
+  min-height: 40px;
+  padding: 4px 8px;
+}
+
+.tree-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--text-3);
+  transition: transform .15s var(--ease);
+}
+
+.tree-chevron.open {
+  transform: rotate(90deg);
+}
+
+.tree-label {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-label small {
+  color: var(--text-3);
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-count {
+  color: var(--text-3);
+  font-size: 11px;
+}
+
+.badge {
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--text-3);
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.badge.export {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.mark.ok {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  flex: none;
+}
+
+.mark.stale {
+  display: inline-flex;
+  color: var(--warning);
+  flex: none;
+}
+
+.reason {
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.reason.stale,
+.reason.changed {
+  background: rgba(238, 194, 124, .16);
+  color: var(--warning);
+}
+
+.tree-empty,
+.tree-loading,
+.tree-indexing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px 10px calc(8px + var(--depth, 0) * 14px);
+  color: var(--text-3);
+}
+
+.tree-empty {
+  justify-content: center;
+  padding: 24px 12px;
+}
+
+.tree-indexing {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.tree-indexing p {
+  margin: 0;
+  color: var(--text-2);
+}
+
+.progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width .3s var(--ease);
+}
+
+.describe {
+  width: calc(100% - 8px);
+  margin: 2px 4px 8px;
+  justify-content: center;
+}
+
+.kind-icon {
+  display: inline-flex;
+  color: var(--text-3);
+  flex: none;
+}
+
+.kind-procedure,
+.kind-function {
+  color: var(--syn-keyword);
+}
+
+.kind-variable {
+  color: var(--syn-meta);
+}
+
+.kind-module {
+  color: var(--syn-string);
+}
+
+mark {
+  background: rgba(238, 194, 124, .35);
+  color: inherit;
+  border-radius: 2px;
+}

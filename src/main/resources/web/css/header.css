@@ -71,3 +71,7 @@
     opacity: .35;
   }
 }
+
+.icon-btn[hidden] {
+  display: none;
+}

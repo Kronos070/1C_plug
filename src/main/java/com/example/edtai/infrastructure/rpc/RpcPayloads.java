@@ -1,6 +1,8 @@
 package com.example.edtai.infrastructure.rpc;
 
+import com.example.edtai.domain.Feedback;
 import com.example.edtai.domain.UiAnswer;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 final class RpcPayloads {
@@ -28,5 +30,24 @@ final class RpcPayloads {
             record.addProperty("value", answer.value());
         }
         return record;
+    }
+
+    static JsonObject feedback(Feedback feedback) {
+        // Собирает отзыв о коде для агента
+        JsonObject data = new JsonObject();
+        data.addProperty("kind", feedback.kind() == null ? "" : feedback.kind().id());
+        data.addProperty("target", feedback.target());
+        data.addProperty("file", feedback.path());
+        data.addProperty("startLine", feedback.startLine());
+        data.addProperty("endLine", feedback.endLine());
+        JsonArray categories = new JsonArray();
+        feedback.categories().forEach(categories::add);
+        data.add("categories", categories);
+        data.addProperty("comment", feedback.comment());
+        data.addProperty("originalCode", feedback.originalCode());
+        data.addProperty("rewrittenCode", feedback.currentCode());
+        JsonObject payload = new JsonObject();
+        payload.add("feedback", data);
+        return payload;
     }
 }

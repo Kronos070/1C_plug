@@ -100,6 +100,9 @@
       return "\u0000" + (codes.length - 1) + "\u0000";
     });
     html = html
+      .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, function (_m, id, label) {
+        return '<a class="doc-link" data-doc="' + id.trim() + '">' + (label || id).trim() + "</a>";
+      })
       .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a data-href="$2">$1</a>')
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/__([^_]+)__/g, "<strong>$1</strong>")

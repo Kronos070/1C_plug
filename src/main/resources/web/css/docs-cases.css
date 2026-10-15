@@ -1,0 +1,77 @@
+.cases-count {
+  margin-left: 8px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-3);
+  font-size: 11px;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.case {
+  margin: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.case > summary {
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.case > summary::-webkit-details-marker {
+  display: none;
+}
+
+.case > summary::before {
+  content: "▸";
+  display: inline-block;
+  width: 14px;
+  color: var(--text-3);
+  transition: transform .15s var(--ease);
+}
+
+.case[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.case-body {
+  margin: 0 14px 12px 28px;
+}
+
+.page-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.page-error p {
+  margin: 4px 0 0;
+  color: var(--text-2);
+}
+
+.skeleton i {
+  display: block;
+  height: 12px;
+  margin: 18px 0;
+  border-radius: 6px;
+  background: var(--surface-2);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.skeleton i.title {
+  width: 40%;
+  height: 22px;
+}
+
+.skeleton i.short {
+  width: 55%;
+}

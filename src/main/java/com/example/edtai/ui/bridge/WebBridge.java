@@ -68,6 +68,11 @@ public final class WebBridge implements ChatOutput {
         post(EventSerializer.ask(action, context));
     }
 
+    public void prompt(String text) {
+        // Отправляет текстовый запрос на страницу
+        post(EventSerializer.prompt(text));
+    }
+
     public void post(JsonObject message) {
         // Ставит сообщение в очередь отправки
         synchronized (queue) {

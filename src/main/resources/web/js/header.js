@@ -5,6 +5,7 @@
   let title;
   let dot;
   let historyButton;
+  let docsButton;
 
   P.header = {
     render: function () {
@@ -14,11 +15,15 @@
       historyButton = P.iconButton("history", "История чатов", function () {
         P.history.toggle(historyButton);
       });
+      docsButton = P.iconButton("docs", "Документация проекта", function () {
+        P.post("docs");
+      });
       header.append(
         P.h("div", { class: "brand" }, [P.logo.create(24, { egg: true }).el]),
         P.h("div", { class: "header-title" }, [title, dot]),
         P.h("div", { class: "header-actions" }, [
           historyButton,
+          docsButton,
           P.iconButton("plus", "Новый чат", function () {
             P.post("newChat");
           }),
@@ -43,6 +48,7 @@
         return;
       }
       const state = P.state;
+      docsButton.hidden = !state.docsSupported;
       title.textContent = state.sessionName || P.thread.title() || "Новый чат";
       title.title = title.textContent;
       const tone = { online: "online", connecting: "pending", offline: "offline" }[state.connection] || "pending";

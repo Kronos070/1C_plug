@@ -3,6 +3,7 @@ package com.example.edtai.infrastructure.rpc;
 import com.example.edtai.application.port.AgentGateway;
 import com.example.edtai.application.port.AgentListener;
 import com.example.edtai.application.port.AgentUnavailableException;
+import com.example.edtai.application.port.DocsGateway;
 import com.example.edtai.application.port.PromptOutcome;
 import com.example.edtai.application.port.SessionTools;
 import com.example.edtai.domain.AgentMode;
@@ -16,12 +17,10 @@ import com.example.edtai.domain.UiAnswer;
 import com.example.edtai.infrastructure.process.AgentProcess;
 import com.example.edtai.infrastructure.process.LaunchSpec;
 import com.example.edtai.infrastructure.process.LaunchSpecSource;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public final class PerunGateway implements AgentGateway {
 
@@ -30,6 +29,7 @@ public final class PerunGateway implements AgentGateway {
     private final LaunchSpecSource source;
     private final RpcEventTranslator translator = new RpcEventTranslator();
     private final RpcWriteTracker writes = new RpcWriteTracker();
+    private final RpcDocsGateway docs = new RpcDocsGateway(() -> this.rpc);
     private volatile LaunchSpec spec;
     private volatile AgentProcess process;
     private volatile RpcConnection rpc;
@@ -67,9 +67,9 @@ public final class PerunGateway implements AgentGateway {
         rpc = new RpcConnection(process);
         rpc.open(this::onRecord, this::onClosed);
         try {
-            rpc.request("get_state", null, true).get(30, TimeUnit.SECONDS);
-            JsonObject commands = rpc.request("get_commands", null, true).get(30, TimeUnit.SECONDS);
-            modesSupported = RpcStateAssembler.supportsModes(commands);
+            JsonObject commands = RpcStateAssembler.handshake(rpc);
+            modesSupported = RpcStateAssembler.supports(commands, "mode");
+            docs.support(RpcStateAssembler.supports(commands, "docs"));
         } catch (Exception e) {
             String details = process.stderrTail();
             stop();
@@ -107,7 +107,7 @@ public final class PerunGateway implements AgentGateway {
     @Override
     public CompletableFuture<AgentState> state() {
         // Запрашивает состояние агента
-        return RpcStateAssembler.assemble(rpc, mode, modesSupported);
+        return RpcStateAssembler.assemble(rpc, mode, modesSupported, docs.supported());
     }
 
     @Override
@@ -150,28 +150,14 @@ public final class PerunGateway implements AgentGateway {
     @Override
     public CompletableFuture<Void> submitFeedback(Feedback feedback) {
         // Отправляет отзыв о коде агенту через RPC
-        RpcConnection connection = rpc;
-        if (connection == null) {
-            return CompletableFuture.failedFuture(new AgentUnavailableException("Агент не запущен"));
-        }
-        JsonObject data = new JsonObject();
-        data.addProperty("kind", feedback.kind() == null ? "" : feedback.kind().id());
-        data.addProperty("target", feedback.target());
-        data.addProperty("file", feedback.path());
-        data.addProperty("startLine", feedback.startLine());
-        data.addProperty("endLine", feedback.endLine());
-        JsonArray categories = new JsonArray();
-        for (String category : feedback.categories()) {
-            categories.add(category);
-        }
-        data.add("categories", categories);
-        data.addProperty("comment", feedback.comment());
-        data.addProperty("originalCode", feedback.originalCode());
-        data.addProperty("rewrittenCode", feedback.currentCode());
+        return rpc == null ? CompletableFuture.failedFuture(new AgentUnavailableException("Агент не запущен"))
+                : command("submit_feedback", RpcPayloads.feedback(feedback));
+    }
 
-        JsonObject payload = new JsonObject();
-        payload.add("feedback", data);
-        return connection.request("submit_feedback", payload, true).thenApply(result -> null);
+    @Override
+    public DocsGateway docs() {
+        // Возвращает документацию из Перуна
+        return docs;
     }
 
     @Override

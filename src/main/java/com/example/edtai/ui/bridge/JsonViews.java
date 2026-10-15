@@ -54,6 +54,7 @@ final class JsonViews {
         }
         json.add("modes", modes);
         json.addProperty("streaming", state.streaming());
+        json.addProperty("docsSupported", state.docsSupported());
         json.addProperty("sessionName", state.sessionName());
         return json;
     }

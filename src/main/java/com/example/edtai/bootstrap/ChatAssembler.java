@@ -23,8 +23,9 @@ public final class ChatAssembler {
     private ChatAssembler() {
     }
 
-    public static ChatService assemble(PluginSettings settings, ChatOutput output) {
+    public static ChatService assemble(PluginSettings settings, ChatOutput page) {
         // Собирает сервис чата по настройкам
+        ChatOutput output = new DocsStatusRelay(page);
         Path root = WorkspaceLocator.resolve(settings.workDirectory());
         WorkspaceFiles files = new WorkspaceFiles(root);
         MarkerWriter marks = new MarkerWriter(AnnotationSync::refresh);

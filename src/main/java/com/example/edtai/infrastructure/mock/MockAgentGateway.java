@@ -2,6 +2,7 @@ package com.example.edtai.infrastructure.mock;
 
 import com.example.edtai.application.port.AgentGateway;
 import com.example.edtai.application.port.AgentListener;
+import com.example.edtai.application.port.DocsGateway;
 import com.example.edtai.application.port.PromptOutcome;
 import com.example.edtai.application.port.SessionTools;
 import com.example.edtai.domain.AgentMode;
@@ -104,7 +105,7 @@ public final class MockAgentGateway implements AgentGateway {
                 ? List.of(ThinkingLevel.OFF, ThinkingLevel.LOW, ThinkingLevel.MEDIUM, ThinkingLevel.HIGH)
                 : List.of(ThinkingLevel.OFF);
         ThinkingLevel level = model.reasoning() ? thinking : ThinkingLevel.OFF;
-        return CompletableFuture.completedFuture(new AgentState(model, MODELS, level, levels, mode, true, streaming,
+        return CompletableFuture.completedFuture(new AgentState(model, MODELS, level, levels, mode, true, true, streaming,
                 store.current(), ""));
     }
 
@@ -157,6 +158,12 @@ public final class MockAgentGateway implements AgentGateway {
     public CompletableFuture<Void> submitFeedback(com.example.edtai.domain.Feedback feedback) {
         // Имитирует отправку отзыва
         return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public DocsGateway docs() {
+        // Возвращает демо-документацию
+        return MockDocsGateway.shared();
     }
 
     @Override

@@ -17,6 +17,12 @@
   function bindDelegates() {
     // Обрабатывает ссылки и копирование кода
     document.addEventListener("click", function (event) {
+      const doc = event.target.closest("a[data-doc]");
+      if (doc) {
+        event.preventDefault();
+        P.post("docs", { id: doc.getAttribute("data-doc") });
+        return;
+      }
       const link = event.target.closest("a[data-href]");
       if (link) {
         event.preventDefault();
@@ -47,19 +53,6 @@
       button.classList.toggle("visible", !P.thread.nearBottom());
     });
   }
-
-  function applyTheme(event) {
-    // Применяет цвета темы EDT
-    const root = document.documentElement;
-    root.setAttribute("data-theme", event.dark ? "dark" : "light");
-    if (event.background) {
-      root.style.setProperty("--edt-bg", event.background);
-    } else {
-      root.style.removeProperty("--edt-bg");
-    }
-  }
-
-  P.on("theme", applyTheme);
 
   P.on("connecting", function () {
     P.thread.hideOffline();

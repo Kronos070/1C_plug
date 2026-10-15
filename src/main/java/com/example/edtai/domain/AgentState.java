@@ -9,6 +9,7 @@ public record AgentState(
         List<ThinkingLevel> thinkingLevels,
         AgentMode mode,
         boolean modesSupported,
+        boolean docsSupported,
         boolean streaming,
         String sessionFile,
         String sessionName) {
@@ -20,7 +21,7 @@ public record AgentState(
 
     public AgentState withMode(AgentMode value) {
         // Возвращает состояние с режимом
-        return new AgentState(model, models, thinking, thinkingLevels, value, modesSupported, streaming,
+        return new AgentState(model, models, thinking, thinkingLevels, value, modesSupported, docsSupported, streaming,
                 sessionFile, sessionName);
     }
 }
