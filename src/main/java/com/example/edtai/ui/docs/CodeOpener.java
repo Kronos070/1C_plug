@@ -20,12 +20,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-final class CodeOpener {
+public final class CodeOpener {
 
     private CodeOpener() {
     }
 
-    static Optional<String> open(String path, int line) {
+    public static Optional<String> open(String path, int line) {
         // Открывает файл и переходит к строке
         if (path.isBlank()) {
             return Optional.of("У записи нет ссылки на код");

@@ -4,7 +4,6 @@ import com.example.edtai.application.port.AiCodeMarks;
 import com.example.edtai.domain.AiProvenance;
 import com.example.edtai.domain.LineRange;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -66,7 +65,7 @@ public final class MarkerWriter implements AiCodeMarks {
     private static void markRanges(IFile file, String text, List<LineRange> ranges, AiProvenance provenance)
             throws CoreException {
         // Отмечает диапазоны строк напрямую по смещениям
-        List<int[]> lines = lineOffsets(text);
+        List<int[]> lines = TextLines.offsets(text);
         if (lines.isEmpty()) {
             return;
         }
@@ -84,34 +83,6 @@ public final class MarkerWriter implements AiCodeMarks {
                 AiMarkers.create(file, start, end, text.substring(start, end), provenance);
             }
         }
-    }
-
-    private static List<int[]> lineOffsets(String text) {
-        // Рассчитывает начальные и конечные смещения строк
-        List<int[]> lines = new ArrayList<>();
-        int len = text.length();
-        int start = 0;
-        int i = 0;
-        while (i < len) {
-            char c = text.charAt(i);
-            if (c == '\r') {
-                int end = (i + 1 < len && text.charAt(i + 1) == '\n') ? i + 2 : i + 1;
-                lines.add(new int[] {start, end});
-                i = end;
-                start = end;
-            } else if (c == '\n') {
-                int end = i + 1;
-                lines.add(new int[] {start, end});
-                i = end;
-                start = end;
-            } else {
-                i++;
-            }
-        }
-        if (start < len || lines.isEmpty() || (len > 0 && (text.charAt(len - 1) == '\n' || text.charAt(len - 1) == '\r'))) {
-            lines.add(new int[] {start, len});
-        }
-        return lines;
     }
 
     private static void mark(IFile file, String text, List<String> snippets, AiProvenance provenance)

@@ -51,10 +51,34 @@
       <super type="org.eclipse.core.resources.textmarker"/>
       <persistent value="true"/>
    </extension>
+   <extension id="aiAdded" name="Добавлено Перуном" point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.textmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension id="aiModified" name="Изменено Перуном" point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.textmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension id="aiDeleted" name="Удалено Перуном" point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.textmarker"/>
+      <persistent value="true"/>
+   </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             name="com.example.edtai.aiFragment"
             markerType="com.example.edtai.aiFragment">
+      </type>
+      <type
+            name="com.example.edtai.aiAdded"
+            markerType="com.example.edtai.aiAdded">
+      </type>
+      <type
+            name="com.example.edtai.aiModified"
+            markerType="com.example.edtai.aiModified">
+      </type>
+      <type
+            name="com.example.edtai.aiDeleted"
+            markerType="com.example.edtai.aiDeleted">
       </type>
    </extension>
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
@@ -66,7 +90,7 @@
             colorPreferenceKey="perunAiColor"
             colorPreferenceValue="238,240,252"
             highlightPreferenceKey="perunAiHighlight"
-            highlightPreferenceValue="true"
+            highlightPreferenceValue="false"
             verticalRulerPreferenceKey="perunAiRuler"
             verticalRulerPreferenceValue="true"
             overviewRulerPreferenceKey="perunAiOverview"
@@ -75,6 +99,63 @@
             textPreferenceValue="false"
             includeOnPreferencePage="true"
             presentationLayer="2">
+      </specification>
+      <specification
+            annotationType="com.example.edtai.aiAdded"
+            label="Добавлено Перуном"
+            icon="icons/ai-added.png"
+            colorPreferenceKey="perunAiAddedColor"
+            colorPreferenceValue="235,238,252"
+            highlightPreferenceKey="perunAiAddedHighlight"
+            highlightPreferenceValue="true"
+            verticalRulerPreferenceKey="perunAiAddedRuler"
+            verticalRulerPreferenceValue="true"
+            overviewRulerPreferenceKey="perunAiAddedOverview"
+            overviewRulerPreferenceValue="true"
+            textPreferenceKey="perunAiAddedText"
+            textPreferenceValue="false"
+            textStylePreferenceKey="perunAiAddedTextStyle"
+            textStylePreferenceValue="IBEAM"
+            includeOnPreferencePage="true"
+            presentationLayer="3">
+      </specification>
+      <specification
+            annotationType="com.example.edtai.aiModified"
+            label="Изменено Перуном"
+            icon="icons/ai-modified.png"
+            colorPreferenceKey="perunAiModifiedColor"
+            colorPreferenceValue="252,239,224"
+            highlightPreferenceKey="perunAiModifiedHighlight"
+            highlightPreferenceValue="true"
+            verticalRulerPreferenceKey="perunAiModifiedRuler"
+            verticalRulerPreferenceValue="true"
+            overviewRulerPreferenceKey="perunAiModifiedOverview"
+            overviewRulerPreferenceValue="true"
+            textPreferenceKey="perunAiModifiedText"
+            textPreferenceValue="false"
+            textStylePreferenceKey="perunAiModifiedTextStyle"
+            textStylePreferenceValue="IBEAM"
+            includeOnPreferencePage="true"
+            presentationLayer="3">
+      </specification>
+      <specification
+            annotationType="com.example.edtai.aiDeleted"
+            label="Удалено Перуном"
+            icon="icons/ai-deleted.png"
+            colorPreferenceKey="perunAiDeletedColor"
+            colorPreferenceValue="214,72,64"
+            highlightPreferenceKey="perunAiDeletedHighlight"
+            highlightPreferenceValue="false"
+            verticalRulerPreferenceKey="perunAiDeletedRuler"
+            verticalRulerPreferenceValue="true"
+            overviewRulerPreferenceKey="perunAiDeletedOverview"
+            overviewRulerPreferenceValue="true"
+            textPreferenceKey="perunAiDeletedText"
+            textPreferenceValue="true"
+            textStylePreferenceKey="perunAiDeletedTextStyle"
+            textStylePreferenceValue="IBEAM"
+            includeOnPreferencePage="true"
+            presentationLayer="3">
       </specification>
    </extension>
    <extension point="org.eclipse.ui.startup">

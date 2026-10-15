@@ -3,6 +3,7 @@ package com.example.edtai.ui.marks;
 import com.example.edtai.bootstrap.FeedbackAssembler;
 import com.example.edtai.infrastructure.marks.RewriteWatcher;
 import com.example.edtai.infrastructure.settings.PreferenceKeys;
+import com.example.edtai.ui.review.DeletedLines;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.State;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -25,6 +26,8 @@ public final class MarksStartup implements IStartup {
         PlatformUI.getWorkbench().getDisplay().asyncExec(MarksStartup::sync);
         PlatformUI.getWorkbench().getDisplay().asyncExec(
                 () -> MarksColor.install(PlatformUI.getWorkbench().getDisplay()));
+        PlatformUI.getWorkbench().getDisplay().asyncExec(
+                () -> DeletedLines.install(PlatformUI.getWorkbench().getDisplay()));
     }
 
     private static void sync() {

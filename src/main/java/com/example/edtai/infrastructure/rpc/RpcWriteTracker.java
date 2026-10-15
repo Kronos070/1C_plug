@@ -27,7 +27,9 @@ final class RpcWriteTracker {
             JsonObject args = JsonFields.object(record, "args");
             args.addProperty("__tool", JsonFields.text(record, "toolName"));
             pending.put(id, args);
-            return Optional.empty();
+            String target = JsonFields.text(args, "path");
+            return target.isBlank() ? Optional.empty() : Optional.of(new ChatEvent.CodeWriting(
+                    workDirectory.resolve(target).normalize().toString(), JsonFields.text(record, "toolName")));
         }
         if (!"tool_execution_end".equals(type)) {
             return Optional.empty();
@@ -38,7 +40,9 @@ final class RpcWriteTracker {
         }
         String path = workDirectory.resolve(JsonFields.text(args, "path")).normalize().toString();
         List<LineRange> ranges = parseRanges(record);
-        return Optional.of(new ChatEvent.CodeWritten(path, snippets(args), ranges));
+        String patch = JsonFields.text(JsonFields.object(JsonFields.object(record, "result"), "details"), "patch");
+        return Optional.of(new ChatEvent.CodeWritten(path, snippets(args), ranges, JsonFields.text(args, "__tool"),
+                patch));
     }
 
     private static List<LineRange> parseRanges(JsonObject record) {

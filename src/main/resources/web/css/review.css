@@ -1,0 +1,170 @@
+.review-slot:empty {
+  display: none;
+}
+
+.review {
+  max-width: var(--column);
+  margin: 0 auto 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+  animation: rise .16s var(--ease);
+}
+
+.review-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 8px;
+}
+
+.review-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+  padding: 2px;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.review-chev {
+  display: inline-flex;
+  color: var(--text-3);
+  transition: transform .15s var(--ease);
+}
+
+.review-toggle.open .review-chev {
+  transform: rotate(90deg);
+}
+
+.review-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.review-counts {
+  display: inline-flex;
+  gap: 6px;
+  font: 11.5px var(--mono);
+}
+
+.review-count.added {
+  color: var(--accent);
+}
+
+.review-count.modified {
+  color: #e39234;
+}
+
+.review-count.deleted {
+  color: var(--danger);
+}
+
+.review-actions {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+
+.review-btn {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.review-files {
+  max-height: 260px;
+  overflow-y: auto;
+  border-top: 1px solid var(--border);
+}
+
+.review-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 4px 10px;
+}
+
+.review-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.review-name:hover strong {
+  color: var(--accent);
+}
+
+.review-mini {
+  width: 24px;
+  height: 24px;
+}
+
+.review-diff {
+  padding: 0 10px 8px 28px;
+}
+
+.review-hunk {
+  margin-top: 4px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+
+.review-hunk:hover {
+  border-color: var(--accent);
+}
+
+.review-line {
+  display: flex;
+  gap: 8px;
+  padding: 0 8px;
+  font: 11.5px/1.6 var(--mono);
+  white-space: pre;
+  tab-size: 2;
+  overflow: hidden;
+}
+
+.review-line code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.review-sign {
+  flex: none;
+  width: 10px;
+  color: var(--text-3);
+}
+
+.review-line.deleted {
+  background: var(--danger-soft);
+  color: var(--danger);
+  text-decoration: line-through;
+  text-decoration-color: rgba(240, 145, 137, .5);
+}
+
+.review-line.modified {
+  background: rgba(227, 146, 52, .1);
+}
+
+.review-line.added {
+  background: var(--accent-soft);
+}
+
+.review-more {
+  margin-top: 4px;
+  color: var(--text-3);
+  font-size: 11.5px;
+}

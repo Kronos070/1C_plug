@@ -11,12 +11,14 @@ public final class PageAssembler {
 
     private static final List<String> CHAT_STYLES = List.of(
             "tokens.css", "base.css", "header.css", "messages.css", "empty.css", "markdown.css", "composer.css",
-            "menus.css", "cards.css", "toasts.css", "palette.css", "context.css", "logo.css", "feedback.css");
+            "menus.css", "cards.css", "toasts.css", "palette.css", "context.css", "logo.css", "feedback.css",
+            "review.css");
     private static final List<String> CHAT_SCRIPTS = List.of(
             "core.js", "icons.js", "theme.js", "logo-model.js", "logo-render.js", "logo-timeline.js", "logo.js",
             "logo-egg.js", "highlight.js", "markdown.js", "menus.js", "notices.js", "history.js", "header.js",
             "sources.js", "parts.js", "rating.js", "reply.js", "messages.js", "stream.js", "requests.js",
-            "commands.js", "palette.js", "mentions.js", "login.js", "chips.js", "context.js", "composer.js",
+            "commands.js", "palette.js", "mentions.js", "login.js", "chips.js", "context.js", "review.js",
+            "composer.js",
             "app.js");
     private static final List<String> DOCS_STYLES = List.of(
             "tokens.css", "base.css", "markdown.css", "toasts.css", "logo.css", "docs-layout.css", "docs-side.css",

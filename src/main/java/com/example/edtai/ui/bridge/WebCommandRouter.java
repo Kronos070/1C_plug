@@ -3,12 +3,15 @@ package com.example.edtai.ui.bridge;
 import com.example.edtai.application.ChatService;
 import com.example.edtai.application.FeedbackService;
 import com.example.edtai.bootstrap.DocsAssembler;
+import com.example.edtai.bootstrap.ReviewAssembler;
 import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.AiProvenance;
 import com.example.edtai.domain.ChatEvent;
 import com.example.edtai.domain.CodeContext;
 import com.example.edtai.domain.UiAnswer;
 import com.example.edtai.ui.docs.DocsOpener;
+import com.example.edtai.ui.review.ReviewActions;
+import com.example.edtai.ui.review.ReviewViews;
 import com.example.edtai.ui.feedback.EditorInserter;
 import com.google.gson.JsonObject;
 import java.util.Optional;
@@ -29,11 +32,13 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
     private final Shell shell;
     private final ChatFeedback feedback;
     private final Consumer<JsonObject> post;
+    private final Consumer<ChatEvent> notify;
 
     public WebCommandRouter(Supplier<ChatService> service, Function<String, Optional<CodeContext>> contexts,
             Runnable restart, Shell shell, FeedbackService feedback, Consumer<ChatEvent> notify,
             Consumer<JsonObject> post) {
         this.post = post;
+        this.notify = notify;
         this.service = service;
         this.contexts = contexts;
         this.restart = restart;
@@ -47,6 +52,11 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
         String action = text(command, "action");
         switch (action) {
             case "copy" -> ClipboardText.copy(shell, text(command, "text"));
+            case "ready" -> post.accept(ReviewViews.summary(ReviewAssembler.service().files()));
+            case "reviewAccept" -> ReviewActions.accept(ReviewAssembler.service(), text(command, "path"));
+            case "reviewReject" -> ReviewActions.reject(ReviewAssembler.service(), text(command, "path"), shell,
+                    this::notice);
+            case "reviewOpen" -> ReviewActions.open(text(command, "path"), number(command, "line"), this::notice);
             case "docs" -> DocsOpener.open(text(command, "id"));
             case "docsPeek" -> DocsPeek.peek(DocsAssembler.service(), command.get("ids"), text(command, "key"), post);
             case "link" -> openLink(text(command, "url"));
@@ -82,6 +92,16 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
             default -> {
             }
         }
+    }
+
+    private void notice(String level, String text) {
+        // Показывает уведомление в чате
+        notify.accept(new ChatEvent.Notice(level, text));
+    }
+
+    private static int number(JsonObject command, String key) {
+        // Читает числовое поле команды
+        return command.has(key) && command.get(key).isJsonPrimitive() ? command.get(key).getAsInt() : 0;
     }
 
     private static AiProvenance provenance(JsonObject command, String source) {

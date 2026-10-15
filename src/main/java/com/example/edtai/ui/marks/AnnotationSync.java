@@ -1,8 +1,11 @@
 package com.example.edtai.ui.marks;
 
 import com.example.edtai.infrastructure.marks.AiMarkers;
+import com.example.edtai.infrastructure.marks.ReviewMarkers;
 import com.example.edtai.infrastructure.marks.WorkspaceText;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -50,7 +53,11 @@ public final class AnnotationSync {
             Display.getCurrent().timerExec(DELAY_MS, () -> attempt(file, left - 1));
             return;
         }
-        for (IMarker marker : AiMarkers.find(file)) {
+        List<IMarker> markers = new ArrayList<>(AiMarkers.find(file));
+        for (String type : List.of(ReviewMarkers.ADDED, ReviewMarkers.MODIFIED, ReviewMarkers.DELETED)) {
+            markers.addAll(ReviewMarkers.find(file, type));
+        }
+        for (IMarker marker : markers) {
             try {
                 marker.setAttribute(SYNCED, Long.toString(System.currentTimeMillis()));
             } catch (CoreException ignored) {

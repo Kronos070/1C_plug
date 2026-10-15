@@ -22,10 +22,12 @@
         setTimeout(P.palette.close, 150);
       });
       const box = P.h("div", { class: "composer" }, [contextSlot, input, P.h("div", { class: "composer-bar" }, [chips, sendButton])]);
+      const reviewSlot = P.h("div", { class: "review-slot" });
       P.chips.mount(chips);
       P.context.mount(contextSlot);
+      P.review.mount(reviewSlot);
       P.palette.attach(box);
-      document.getElementById("composer").append(box,
+      document.getElementById("composer").append(reviewSlot, box,
         P.h("div", { class: "composer-hint", text: "Enter — отправить · Shift+Enter — новая строка · / — команды · @ — файлы" }));
       P.composer.update();
     },

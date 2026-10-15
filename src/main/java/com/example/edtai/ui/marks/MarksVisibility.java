@@ -10,7 +10,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public final class MarksVisibility {
 
-    private static final String[] KEYS = {"perunAiHighlight", "perunAiRuler", "perunAiOverview"};
+    private static final String[] KEYS = {"perunAiRuler", "perunAiOverview"};
+    private static final String HIGHLIGHT = "perunAiHighlight";
 
     private MarksVisibility() {
     }
@@ -40,5 +41,6 @@ public final class MarksVisibility {
         for (String key : KEYS) {
             store.setValue(key, visible);
         }
+        store.setValue(HIGHLIGHT, false);
     }
 }

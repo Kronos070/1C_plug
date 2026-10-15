@@ -1,6 +1,7 @@
 package com.example.edtai.ui;
 
 import com.example.edtai.application.ChatService;
+import com.example.edtai.application.ReviewSignals;
 import com.example.edtai.bootstrap.ChatAssembler;
 import com.example.edtai.bootstrap.FeedbackAssembler;
 import com.example.edtai.domain.CodeAction;
@@ -12,6 +13,7 @@ import com.example.edtai.ui.bridge.WebBridge;
 import com.example.edtai.ui.bridge.WebCommandRouter;
 import com.example.edtai.ui.context.EditorContextTracker;
 import com.example.edtai.ui.layout.ChatSlot;
+import com.example.edtai.ui.review.ReviewViews;
 import com.example.edtai.ui.theme.EdtPalette;
 import com.example.edtai.ui.theme.ThemeWatcher;
 import java.util.Optional;
@@ -34,6 +36,8 @@ public final class ChatView extends ViewPart {
     private ThemeWatcher theme;
     private EditorContextTracker contexts;
     private Runnable pendingAsk;
+    private Runnable unsubscribeReview = () -> {
+    };
     private volatile ChatService service;
 
     @Override
@@ -68,6 +72,7 @@ public final class ChatView extends ViewPart {
         theme = new ThemeWatcher(parent, getSite().getService(IEventBroker.class),
                 palette -> bridge.theme(palette.prefer(settings.load().theme())));
         settings.onChange(this::onSettingChanged);
+        unsubscribeReview = ReviewSignals.subscribe(files -> bridge.post(ReviewViews.summary(files)));
         parent.layout(true, true);
         connect();
         if (pendingAsk != null) {
@@ -108,6 +113,7 @@ public final class ChatView extends ViewPart {
     public void dispose() {
         // Освобождает ресурсы и агента
         settings.dispose();
+        unsubscribeReview.run();
         if (contexts != null) {
             contexts.dispose();
         }

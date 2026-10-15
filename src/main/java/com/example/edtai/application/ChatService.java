@@ -39,7 +39,7 @@ public final class ChatService implements AgentListener {
         this.catalog = ports.catalog();
         this.files = ports.files();
         this.rules = ports.rules();
-        this.recorder = new AiCodeRecorder(ports.marks(), () -> state);
+        this.recorder = new AiCodeRecorder(ports.marks(), ports.review(), () -> state);
         this.output = output;
         this.guard = new PermissionGuard(gateway, ports.permissions(), this::emit);
         this.sender = new PromptSender(gateway, this::emit, this::refreshState);

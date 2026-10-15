@@ -2,6 +2,7 @@ package com.example.edtai.application;
 
 import com.example.edtai.application.port.AgentGateway;
 import com.example.edtai.application.port.AiCodeMarks;
+import com.example.edtai.application.port.CodeReview;
 import com.example.edtai.application.port.CredentialStore;
 import com.example.edtai.application.port.FileFinder;
 import com.example.edtai.application.port.PermissionStore;
@@ -15,5 +16,6 @@ public record ChatPorts(
         FileFinder files,
         PermissionStore permissions,
         AiCodeMarks marks,
+        CodeReview review,
         RuleStore rules) {
 }
