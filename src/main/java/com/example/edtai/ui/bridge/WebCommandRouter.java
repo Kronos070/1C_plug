@@ -1,9 +1,13 @@
 package com.example.edtai.ui.bridge;
 
 import com.example.edtai.application.ChatService;
+import com.example.edtai.domain.AgentMode;
+import com.example.edtai.domain.CodeContext;
 import com.example.edtai.domain.UiAnswer;
 import com.google.gson.JsonObject;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -17,11 +21,14 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
     private static final String PREFERENCE_PAGE = "com.example.edtai.preferences";
 
     private final Supplier<ChatService> service;
+    private final Function<String, Optional<CodeContext>> contexts;
     private final Runnable restart;
     private final Shell shell;
 
-    public WebCommandRouter(Supplier<ChatService> service, Runnable restart, Shell shell) {
+    public WebCommandRouter(Supplier<ChatService> service, Function<String, Optional<CodeContext>> contexts,
+            Runnable restart, Shell shell) {
         this.service = service;
+        this.contexts = contexts;
         this.restart = restart;
         this.shell = shell;
     }
@@ -46,7 +53,8 @@ public final class WebCommandRouter implements Consumer<JsonObject> {
             return;
         }
         switch (action) {
-            case "send" -> chat.send(text(command, "text"));
+            case "send" -> chat.send(text(command, "text"), contexts.apply(text(command, "contextId")),
+                    AgentMode.fromId(text(command, "mode")));
             case "abort" -> chat.abort();
             case "newChat" -> chat.newChat();
             case "sessions" -> chat.listSessions();

@@ -42,4 +42,79 @@
       <initializer class="com.example.edtai.infrastructure.settings.PreferenceDefaults">
       </initializer>
    </extension>
+   <extension point="org.eclipse.ui.commands">
+      <command
+            id="com.example.edtai.askCode"
+            name="Спросить ПерУН о коде">
+         <commandParameter
+               id="com.example.edtai.codeAction"
+               name="Действие"
+               optional="false">
+         </commandParameter>
+      </command>
+   </extension>
+   <extension point="org.eclipse.ui.handlers">
+      <handler
+            commandId="com.example.edtai.askCode"
+            class="com.example.edtai.ui.context.AskCodeHandler">
+      </handler>
+   </extension>
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution locationURI="popup:#BslEditorContext?after=additions">
+         <menu id="com.example.edtai.menu.code.bsl" label="ПерУН" icon="icons/perun.png">
+            <command
+                  commandId="com.example.edtai.askCode"
+                  label="Объяснить код"
+                  style="push">
+               <parameter name="com.example.edtai.codeAction" value="explain"/>
+            </command>
+            <command
+                  commandId="com.example.edtai.askCode"
+                  label="Сделать документацию"
+                  style="push">
+               <parameter name="com.example.edtai.codeAction" value="document"/>
+            </command>
+            <command
+                  commandId="com.example.edtai.askCode"
+                  label="Найти ошибки"
+                  style="push">
+               <parameter name="com.example.edtai.codeAction" value="review"/>
+            </command>
+            <command
+                  commandId="com.example.edtai.askCode"
+                  label="Улучшить код"
+                  style="push">
+               <parameter name="com.example.edtai.codeAction" value="refactor"/>
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution locationURI="popup:#TextEditorContext?after=additions">
+         <menu id="com.example.edtai.menu.code.text" label="ПерУН" icon="icons/perun.png">
+            <command
+                  commandId="com.example.edtai.askCode"
+                  label="Объяснить код"
+                  style="push">
+               <parameter name="com.example.edtai.codeAction" value="explain"/>
+            </command>
+            <command
+                  commandId="com.example.edtai.askCode"
+                  label="Сделать документацию"
+                  style="push">
+               <parameter name="com.example.edtai.codeAction" value="document"/>
+            </command>
+            <command
+                  commandId="com.example.edtai.askCode"
+                  label="Найти ошибки"
+                  style="push">
+               <parameter name="com.example.edtai.codeAction" value="review"/>
+            </command>
+            <command
+                  commandId="com.example.edtai.askCode"
+                  label="Улучшить код"
+                  style="push">
+               <parameter name="com.example.edtai.codeAction" value="refactor"/>
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
 </plugin>

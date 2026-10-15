@@ -5,13 +5,14 @@ import com.example.edtai.application.port.AgentListener;
 import com.example.edtai.application.port.AgentUnavailableException;
 import com.example.edtai.application.port.ChatOutput;
 import com.example.edtai.application.port.FileFinder;
-import com.example.edtai.application.port.PromptOutcome;
 import com.example.edtai.application.port.SessionCatalog;
 import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.AgentState;
 import com.example.edtai.domain.ChatEvent;
+import com.example.edtai.domain.CodeContext;
 import com.example.edtai.domain.PermissionScope;
 import com.example.edtai.domain.UiAnswer;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public final class ChatService implements AgentListener {
@@ -25,6 +26,7 @@ public final class ChatService implements AgentListener {
     private final CommandRunner commands;
     private final AgentSettings settings;
     private final PermissionGuard guard;
+    private final PromptSender sender;
     private volatile AgentState state;
     private volatile boolean stopped;
 
@@ -34,6 +36,7 @@ public final class ChatService implements AgentListener {
         this.files = ports.files();
         this.output = output;
         this.guard = new PermissionGuard(gateway, ports.permissions(), this::emit);
+        this.sender = new PromptSender(gateway, this::emit, this::refreshState);
         this.commands = new CommandRunner(gateway.tools(), ports.credentials(), this::emit, this::newChat,
                 this::refreshState);
         this.settings = new AgentSettings(gateway, () -> state, this::emit, this::refreshState);
@@ -58,22 +61,14 @@ public final class ChatService implements AgentListener {
         gateway.stop();
     }
 
-    public void send(String text) {
+    public void send(String text, Optional<CodeContext> context, Optional<AgentMode> mode) {
         // Отправляет сообщение пользователя агенту
         if (text == null || text.isBlank() || commands.tryRun(text.strip())) {
             return;
         }
-        gateway.prompt(text.strip()).whenComplete((outcome, error) -> {
-            if (error != null) {
-                emit(new ChatEvent.Failure(ErrorText.describe(error)));
-                emit(new ChatEvent.Settled(false));
-            } else if (outcome == PromptOutcome.STARTED) {
-                emit(new ChatEvent.Working());
-            } else if (outcome == PromptOutcome.HANDLED) {
-                emit(new ChatEvent.Settled(false));
-                refreshState();
-            }
-        });
+        AgentState current = state;
+        sender.send(PromptComposer.compose(text.strip(), context), mode.filter(value -> current != null
+                && current.modesSupported() && current.mode() != value));
     }
 
     public void abort() {

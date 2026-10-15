@@ -2,6 +2,8 @@ package com.example.edtai.ui.bridge;
 
 import com.example.edtai.application.port.ChatOutput;
 import com.example.edtai.domain.ChatEvent;
+import com.example.edtai.domain.CodeAction;
+import com.example.edtai.domain.CodeContext;
 import com.example.edtai.ui.theme.EdtPalette;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -9,6 +11,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -53,6 +56,16 @@ public final class WebBridge implements ChatOutput {
     public void theme(EdtPalette palette) {
         // Отправляет палитру EDT на страницу
         post(EventSerializer.theme(palette));
+    }
+
+    public void context(Optional<CodeContext> context) {
+        // Отправляет прикрепленный код на страницу
+        post(EventSerializer.context(context));
+    }
+
+    public void ask(CodeAction action, CodeContext context) {
+        // Отправляет действие с кодом на страницу
+        post(EventSerializer.ask(action, context));
     }
 
     public void post(JsonObject message) {

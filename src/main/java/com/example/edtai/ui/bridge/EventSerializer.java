@@ -1,10 +1,15 @@
 package com.example.edtai.ui.bridge;
 
+import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.ChatEvent;
+import com.example.edtai.domain.CodeAction;
+import com.example.edtai.domain.CodeContext;
 import com.example.edtai.ui.theme.EdtPalette;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import java.util.Optional;
 
 final class EventSerializer {
 
@@ -65,6 +70,18 @@ final class EventSerializer {
         // Переводит палитру EDT в JSON
         return typed("theme").with("dark", palette.dark()).with("background", palette.background())
                 .with("foreground", palette.foreground()).json;
+    }
+
+    static JsonObject context(Optional<CodeContext> context) {
+        // Переводит прикрепленный код в JSON
+        return typed("context").put("context", context.<JsonElement>map(JsonViews::context)
+                .orElse(JsonNull.INSTANCE)).json;
+    }
+
+    static JsonObject ask(CodeAction action, CodeContext context) {
+        // Переводит действие с кодом в JSON
+        return typed("ask").with("text", action.prompt()).with("mode", action.mode().map(AgentMode::id).orElse(""))
+                .put("context", JsonViews.context(context)).json;
     }
 
     private static Builder typed(String type) {
