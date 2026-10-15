@@ -31,8 +31,8 @@ public final class PerunPreferencePage extends FieldEditorPreferencePage impleme
         // Создает поля настроек агента
         addField(new StringFieldEditor(PreferenceKeys.COMMAND, "Команда запуска агента:", getFieldEditorParent()));
         addField(new StringFieldEditor(PreferenceKeys.ARGUMENTS, "Дополнительные аргументы:", getFieldEditorParent()));
-        addField(new DirectoryFieldEditor(PreferenceKeys.WORK_DIRECTORY, "Рабочий каталог (пусто — workspace):",
-                getFieldEditorParent()));
+        addField(new DirectoryFieldEditor(PreferenceKeys.WORK_DIRECTORY,
+                "Рабочий каталог (пусто — автоопределение проекта):", getFieldEditorParent()));
         addField(new ComboFieldEditor(PreferenceKeys.THEME, "Тема чата:", new String[][] {
             {"Как в EDT", "auto"}, {"Тёмная", "dark"}, {"Светлая", "light"}}, getFieldEditorParent()));
         addField(new StringFieldEditor(PreferenceKeys.ALLOWED_TOOLS, "Всегда разрешать инструменты:",

@@ -2,7 +2,6 @@ package com.example.edtai.infrastructure.files;
 
 import com.example.edtai.application.port.FileFinder;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +12,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 
 public final class WorkspaceFiles implements FileFinder {
 
@@ -53,32 +56,88 @@ public final class WorkspaceFiles implements FileFinder {
     }
 
     private List<String> scan() {
-        // Обходит рабочий каталог агента
+        // Сначала пробуем получить файлы через модель ресурсов Eclipse
+        List<String> wsFiles = scanFromWorkspace();
+        if (!wsFiles.isEmpty()) {
+            return wsFiles;
+        }
+        // Fallback: сканирование файловой системы
+        return scanFromDisk();
+    }
+
+    private List<String> scanFromWorkspace() {
         List<String> found = new ArrayList<>();
+        try {
+            IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+            if (projects == null || projects.length == 0) {
+                return found;
+            }
+            for (IProject project : projects) {
+                if (!project.isOpen()) {
+                    continue;
+                }
+                IPath projectLoc = project.getLocation();
+                boolean isCurrentRoot = projectLoc != null && projectLoc.toFile().toPath().equals(root);
+
+                project.accept(resource -> {
+                    if (resource.getType() == IResource.FOLDER) {
+                        String name = resource.getName();
+                        if (name.startsWith(".") || SKIPPED.contains(name)) {
+                            return false;
+                        }
+                        return true;
+                    }
+                    if (resource.getType() == IResource.FILE) {
+                        String name = resource.getName();
+                        if (name.startsWith(".") || SKIPPED.contains(name)) {
+                            return true;
+                        }
+                        String relPath = isCurrentRoot
+                                ? resource.getProjectRelativePath().toString()
+                                : project.getName() + "/" + resource.getProjectRelativePath().toString();
+                        found.add(relPath.replace('\\', '/'));
+                        return found.size() < MAX_FILES;
+                    }
+                    return true;
+                });
+
+                if (found.size() >= MAX_FILES) {
+                    break;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return found;
+    }
+
+    private List<String> scanFromDisk() {
+        List<String> found = new ArrayList<>();
+        if (!Files.isDirectory(root)) {
+            return found;
+        }
         try {
             Files.walkFileTree(root, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                    // Пропускает служебные каталоги
                     boolean skip = !dir.equals(root) && SKIPPED.contains(dir.getFileName().toString());
                     return skip ? FileVisitResult.SKIP_SUBTREE : FileVisitResult.CONTINUE;
                 }
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    // Запоминает относительный путь файла
-                    found.add(root.relativize(file).toString().replace('\\', '/'));
+                    String name = file.getFileName().toString();
+                    if (!name.startsWith(".") && !SKIPPED.contains(name)) {
+                        found.add(root.relativize(file).toString().replace('\\', '/'));
+                    }
                     return found.size() >= MAX_FILES ? FileVisitResult.TERMINATE : FileVisitResult.CONTINUE;
                 }
 
                 @Override
                 public FileVisitResult visitFileFailed(Path file, IOException error) {
-                    // Пропускает недоступные файлы
                     return FileVisitResult.CONTINUE;
                 }
             });
-        } catch (IOException e) {
-            throw new UncheckedIOException("Не удалось прочитать файлы рабочего каталога", e);
+        } catch (IOException ignored) {
         }
         return found;
     }
