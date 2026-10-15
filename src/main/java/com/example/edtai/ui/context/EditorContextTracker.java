@@ -53,9 +53,11 @@ public final class EditorContextTracker {
 
     public Optional<CodeContext> resolve(String id) {
         // Находит прикрепленный контекст по идентификатору
-        return Stream.of(current, pinned).flatMap(Optional::stream)
+        Optional<CodeContext> fresh = Optional.ofNullable(page.getActiveEditor()).flatMap(EditorContextReader::read)
+                .filter(context -> context.id().equals(id));
+        return fresh.or(() -> Stream.of(current, pinned).flatMap(Optional::stream)
                 .filter(context -> context.id().equals(id))
-                .findFirst();
+                .findFirst());
     }
 
     public void pin(CodeContext context) {

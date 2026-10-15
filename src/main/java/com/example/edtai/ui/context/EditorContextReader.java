@@ -10,6 +10,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public final class EditorContextReader {
 
@@ -28,13 +29,15 @@ public final class EditorContextReader {
         if (path.isEmpty()) {
             return Optional.empty();
         }
+        CodeContext context = CodeContext.file(path.get());
         if (selection instanceof ITextSelection text && text.getStartLine() >= 0 && text.getText() != null
                 && !text.getText().isBlank()) {
             String code = text.getText().replace("\r\n", "\n");
-            return Optional.of(CodeContext.selection(path.get(), text.getStartLine() + 1, text.getEndLine() + 1,
-                    code));
+            context = CodeContext.selection(path.get(), text.getStartLine() + 1, text.getEndLine() + 1, code);
         }
-        return Optional.of(CodeContext.file(path.get()));
+        ITextEditor textEditor = nested(editor).getAdapter(ITextEditor.class);
+        return Optional.of(textEditor == null ? context
+                : context.withProblems(EditorProblems.collect(textEditor, context.startLine(), context.endLine())));
     }
 
     private static IEditorPart nested(IEditorPart editor) {

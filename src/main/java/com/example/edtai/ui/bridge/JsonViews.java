@@ -28,6 +28,7 @@ final class JsonViews {
         json.addProperty("kind", context.hasCode() ? "selection" : "file");
         json.addProperty("startLine", context.startLine());
         json.addProperty("endLine", context.endLine());
+        json.addProperty("problems", context.problems().size());
         return json;
     }
 

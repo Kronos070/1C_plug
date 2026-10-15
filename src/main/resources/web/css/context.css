@@ -67,3 +67,12 @@
   padding-right: 8px;
   background: var(--surface);
 }
+
+.ctx-problems {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 2px;
+  color: var(--warning);
+  font-size: 11px;
+}

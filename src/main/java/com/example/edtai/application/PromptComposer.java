@@ -1,6 +1,7 @@
 package com.example.edtai.application;
 
 import com.example.edtai.domain.CodeContext;
+import com.example.edtai.domain.CodeProblem;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -21,12 +22,25 @@ final class PromptComposer {
         // Оформляет код в блок контекста
         String file = "<context file=\"" + context.path().replace("\"", "&quot;") + "\"";
         if (!context.hasCode()) {
-            return file + ">\n" + FILE_NOTE + "\n</context>";
+            return file + ">\n" + FILE_NOTE + problems(context) + "\n</context>";
         }
         String fence = context.code().contains("```") ? "````" : "```";
         return file + " lines=\"" + context.startLine() + "-" + context.endLine() + "\">\n"
                 + fence + language(context.path()) + "\n" + context.code().stripTrailing() + "\n" + fence
-                + "\n</context>";
+                + problems(context) + "\n</context>";
+    }
+
+    private static String problems(CodeContext context) {
+        // Перечисляет замечания EDT к коду
+        if (context.problems().isEmpty()) {
+            return "";
+        }
+        StringBuilder text = new StringBuilder("\nЗамечания EDT (ошибки и предупреждения в редакторе):");
+        for (CodeProblem problem : context.problems()) {
+            text.append("\n- ").append(problem.severity().label()).append(", строка ").append(problem.line())
+                    .append(": ").append(problem.message().replace("\n", " "));
+        }
+        return text.toString();
     }
 
     private static String language(String path) {

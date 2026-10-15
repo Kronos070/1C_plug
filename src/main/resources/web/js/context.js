@@ -36,6 +36,8 @@
         P.h("span", { class: "ctx-icon", html: P.icon(selection ? "code" : "file", 13) }),
         P.h("span", { class: "ctx-name", text: label(context.path) }),
         P.h("span", { class: "ctx-lines", text: selection ? "стр. " + range(context) : "текущий файл" }),
+        context.problems ? P.h("span", { class: "ctx-problems", title: "Замечания EDT уйдут вместе с кодом",
+          html: P.icon("alert", 12) + "<span>" + context.problems + "</span>" }) : null,
       ]);
       if (onClose) {
         node.append(P.h("button", { class: "ctx-close", type: "button", title: "Не прикреплять",

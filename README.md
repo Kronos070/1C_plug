@@ -34,7 +34,7 @@
 
 ## Установка
 
-1. Скопируйте файл `com.example.edtai_1.0.13.jar` в папку `dropins` внутри каталога установки EDT. Если папки нет, создайте её.
+1. Скопируйте файл `com.example.edtai_1.0.14.jar` в папку `dropins` внутри каталога установки EDT. Если папки нет, создайте её.
    - Linux, установка через 1C:EDT Start: `~/.local/share/1C/1cedtstart/installations/<версия EDT>/1cedt/dropins/`
    - Windows: `%LOCALAPPDATA%\1C\1cedtstart\installations\<версия EDT>\1cedt\dropins\`
 2. Перезапустите EDT.
@@ -156,7 +156,7 @@ status: new
 ./mvnw package
 ```
 
-Готовый плагин появится в `target/com.example.edtai_1.0.13.jar`.
+Готовый плагин появится в `target/com.example.edtai_1.0.14.jar`.
 
 Плагин общается с агентом через `perun --mode rpc`: по stdin/stdout в формате JSONL. Код разложен по слоям:
 
