@@ -3,20 +3,20 @@
   const P = window.Perun;
   const header = document.getElementById("header");
   let title;
-  let meta;
+  let dot;
   let historyButton;
 
   P.header = {
     render: function () {
       // Строит шапку с историей и действиями
       title = P.h("strong", { text: "Новый чат" });
-      meta = P.h("div", { class: "header-meta" });
+      dot = P.h("span", { class: "status-dot pending" });
       historyButton = P.iconButton("history", "История чатов", function () {
         P.history.toggle(historyButton);
       });
       header.append(
         P.h("div", { class: "brand" }, [P.logo.create(24, { egg: true }).el]),
-        P.h("div", { class: "header-title" }, [title, meta]),
+        P.h("div", { class: "header-title" }, [title, dot]),
         P.h("div", { class: "header-actions" }, [
           historyButton,
           P.iconButton("plus", "Новый чат", function () {
@@ -44,14 +44,11 @@
       }
       const state = P.state;
       title.textContent = state.sessionName || P.thread.title() || "Новый чат";
-      meta.innerHTML = "";
-      const dot = { online: "online", connecting: "pending", offline: "offline" }[state.connection] || "pending";
-      const label = { online: state.agent || "подключено", connecting: "подключение…", offline: "нет связи" };
-      meta.append(P.h("span", { class: "status-dot " + dot }), P.h("span", { text: label[state.connection] }));
-      const permissions = state.statuses["1c-permissions"];
-      if (permissions) {
-        meta.append(P.h("span", { class: "pill", text: permissions.replace(/^\[|\]$/g, "") }));
-      }
+      title.title = title.textContent;
+      const tone = { online: "online", connecting: "pending", offline: "offline" }[state.connection] || "pending";
+      const label = { online: "Агент подключен", connecting: "Подключение…", offline: "Нет связи с агентом" };
+      dot.className = "status-dot " + tone;
+      dot.title = label[state.connection] || "";
     },
   };
 
