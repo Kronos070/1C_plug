@@ -23,6 +23,8 @@ public final class MarksStartup implements IStartup {
             }
         });
         PlatformUI.getWorkbench().getDisplay().asyncExec(MarksStartup::sync);
+        PlatformUI.getWorkbench().getDisplay().asyncExec(
+                () -> MarksColor.install(PlatformUI.getWorkbench().getDisplay()));
     }
 
     private static void sync() {
