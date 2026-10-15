@@ -2,6 +2,7 @@
   "use strict";
   const P = window.Perun;
   let turn = 0;
+  let spinning = null;
 
   P.stream = {
     expect: function () {
@@ -24,6 +25,17 @@
       P.emit("streaming", value);
     },
   };
+
+  P.on("streaming", function (active) {
+    const logo = active && P.thread.reply ? P.thread.reply.logo : null;
+    if (spinning && spinning !== logo) {
+      spinning.spin(false);
+    }
+    spinning = logo;
+    if (logo) {
+      logo.spin(true);
+    }
+  });
 
   P.on("working", function () {
     P.stream.expect();

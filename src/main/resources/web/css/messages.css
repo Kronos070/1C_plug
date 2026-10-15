@@ -49,12 +49,9 @@
   width: 24px;
   height: 24px;
   margin-top: 1px;
-  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-soft);
-  color: var(--accent);
   flex: none;
 }
 

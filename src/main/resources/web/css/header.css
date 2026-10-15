@@ -16,9 +16,6 @@
   justify-content: center;
   width: 26px;
   height: 26px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: var(--accent-text);
   flex: none;
 }
 

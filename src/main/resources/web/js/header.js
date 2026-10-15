@@ -15,7 +15,7 @@
         P.history.toggle(historyButton);
       });
       header.append(
-        P.h("div", { class: "brand", html: P.icon("bolt", 15) }),
+        P.h("div", { class: "brand" }, [P.logo.create(24, { egg: true }).el]),
         P.h("div", { class: "header-title" }, [title, meta]),
         P.h("div", { class: "header-actions" }, [
           historyButton,

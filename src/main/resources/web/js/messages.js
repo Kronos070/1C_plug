@@ -38,8 +38,10 @@
     showEmpty: function () {
       // Показывает приветствие с подсказками
       P.thread.clear();
+      const logo = P.logo.create(56, { egg: true });
+      logo.idle(true);
       thread.append(P.h("div", { class: "empty" }, [
-        P.h("div", { class: "empty-logo", html: P.icon("bolt", 26) }),
+        P.h("div", { class: "empty-logo" }, [logo.el]),
         P.h("h1", { text: "Чем помочь?" }),
         P.h("p", { text: "ПерУН знает вашу конфигурацию 1С: объяснит код, найдет данные и напишет документацию." }),
         P.h("div", { class: "suggestions" }, SUGGESTIONS.map(function (item) {
