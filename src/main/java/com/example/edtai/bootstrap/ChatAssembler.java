@@ -30,11 +30,13 @@ public final class ChatAssembler {
         MarkerWriter marks = new MarkerWriter(AnnotationSync::refresh);
         if (settings.demoMode()) {
             MockAgentGateway mock = new MockAgentGateway();
+            FeedbackAssembler.registerGateway(mock);
             return new ChatService(new ChatPorts(mock, mock.catalog(), new MockCredentialStore(), files,
                     new PreferencePermissionStore(), marks, FeedbackAssembler.rules()), output);
         }
         LaunchSpecFactory factory = new LaunchSpecFactory(new ExecutableLocator());
         PerunGateway gateway = new PerunGateway(() -> factory.create(settings.command(), settings.arguments(), root));
+        FeedbackAssembler.registerGateway(gateway);
         return new ChatService(new ChatPorts(gateway, new FileSessionCatalog(), new AuthFileStore(), files,
                 new PreferencePermissionStore(), marks, FeedbackAssembler.rules()), output);
     }

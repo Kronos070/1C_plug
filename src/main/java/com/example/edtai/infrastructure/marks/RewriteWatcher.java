@@ -1,6 +1,8 @@
 package com.example.edtai.infrastructure.marks;
 
 import com.example.edtai.application.FeedbackService;
+import com.example.edtai.application.port.AgentGateway;
+import com.example.edtai.bootstrap.FeedbackAssembler;
 import com.example.edtai.domain.AiProvenance;
 import com.example.edtai.domain.Feedback;
 import com.example.edtai.domain.FeedbackKind;
@@ -32,9 +34,12 @@ public final class RewriteWatcher implements IResourceChangeListener {
         this.feedback = feedback;
     }
 
+    public RewriteWatcher(AgentGateway gateway) {
+        this(new FeedbackService(gateway, FeedbackAssembler.rules()));
+    }
+
     public void install() {
-        // Подписывается на изменения рабочей области
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+        // Фоновое неявное отслеживание отключено, чтобы избежать ложных срабатываний из-за сдвига смещений маркеров
     }
 
     @Override
@@ -121,11 +126,9 @@ public final class RewriteWatcher implements IResourceChangeListener {
     }
 
     private void save(Feedback entry) {
-        // Сохраняет отзыв, не прерывая работу
-        try {
+        // Сохраняет отзыв через шлюз агента
+        if (feedback != null) {
             feedback.submit(entry);
-        } catch (IOException ignored) {
-            return;
         }
     }
 }

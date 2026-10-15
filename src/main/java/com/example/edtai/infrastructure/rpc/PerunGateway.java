@@ -8,6 +8,7 @@ import com.example.edtai.application.port.SessionTools;
 import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.AgentState;
 import com.example.edtai.domain.ChatEvent;
+import com.example.edtai.domain.Feedback;
 import com.example.edtai.domain.Message;
 import com.example.edtai.domain.ModelInfo;
 import com.example.edtai.domain.ThinkingLevel;
@@ -15,6 +16,7 @@ import com.example.edtai.domain.UiAnswer;
 import com.example.edtai.infrastructure.process.AgentProcess;
 import com.example.edtai.infrastructure.process.LaunchSpec;
 import com.example.edtai.infrastructure.process.LaunchSpecSource;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.List;
@@ -143,6 +145,33 @@ public final class PerunGateway implements AgentGateway {
     public CompletableFuture<Void> selectMode(AgentMode value) {
         // Переключает режим через слэш-команду
         return prompt("/mode " + value.id()).thenAccept(outcome -> mode = value);
+    }
+
+    @Override
+    public CompletableFuture<Void> submitFeedback(Feedback feedback) {
+        // Отправляет отзыв о коде агенту через RPC
+        RpcConnection connection = rpc;
+        if (connection == null) {
+            return CompletableFuture.failedFuture(new AgentUnavailableException("Агент не запущен"));
+        }
+        JsonObject data = new JsonObject();
+        data.addProperty("kind", feedback.kind() == null ? "" : feedback.kind().id());
+        data.addProperty("target", feedback.target());
+        data.addProperty("file", feedback.path());
+        data.addProperty("startLine", feedback.startLine());
+        data.addProperty("endLine", feedback.endLine());
+        JsonArray categories = new JsonArray();
+        for (String category : feedback.categories()) {
+            categories.add(category);
+        }
+        data.add("categories", categories);
+        data.addProperty("comment", feedback.comment());
+        data.addProperty("originalCode", feedback.originalCode());
+        data.addProperty("rewrittenCode", feedback.currentCode());
+
+        JsonObject payload = new JsonObject();
+        payload.add("feedback", data);
+        return connection.request("submit_feedback", payload, true).thenApply(result -> null);
     }
 
     @Override

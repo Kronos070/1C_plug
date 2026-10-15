@@ -29,7 +29,8 @@ final class AiCodeRecorder {
         }
         AgentState current = state.get();
         String model = current == null || !current.model().isKnown() ? "" : current.model().key();
-        marks.markWritten(written.path(), written.snippets(), new AiProvenance(model, lastPrompt, "agent"));
+        marks.markWritten(written.path(), written.snippets(), written.ranges(),
+                new AiProvenance(model, lastPrompt, "agent"));
         return true;
     }
 }

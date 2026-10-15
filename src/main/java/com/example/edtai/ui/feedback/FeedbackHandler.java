@@ -1,5 +1,7 @@
 package com.example.edtai.ui.feedback;
 
+import com.example.edtai.application.port.AgentGateway;
+import com.example.edtai.bootstrap.FeedbackAssembler;
 import com.example.edtai.domain.FeedbackKind;
 import java.util.List;
 import java.util.Optional;
@@ -30,12 +32,13 @@ public final class FeedbackHandler extends AbstractHandler {
                     : "Не удалось определить код для отзыва. Выделите строки и повторите.");
             return null;
         }
+        AgentGateway gateway = FeedbackAssembler.gateway();
         Optional<FeedbackKind> quick = FeedbackKind.fromId(event.getParameter(KIND));
         if (quick.isPresent()) {
-            FeedbackSubmitter.submit(target.get(), new FeedbackInput(quick.get(), List.of(), ""));
+            FeedbackSubmitter.submit(target.get(), new FeedbackInput(quick.get(), List.of(), ""), gateway);
         } else {
             FeedbackPopup.open(target.get(), FeedbackKind.DISLIKE,
-                    input -> FeedbackSubmitter.submit(target.get(), input));
+                    input -> FeedbackSubmitter.submit(target.get(), input, gateway));
         }
         return null;
     }

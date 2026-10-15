@@ -2,7 +2,9 @@ package com.example.edtai.infrastructure.marks;
 
 import com.example.edtai.application.port.AiCodeMarks;
 import com.example.edtai.domain.AiProvenance;
+import com.example.edtai.domain.LineRange;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -27,7 +29,7 @@ public final class MarkerWriter implements AiCodeMarks {
     }
 
     @Override
-    public void markWritten(String path, List<String> snippets, AiProvenance provenance) {
+    public void markWritten(String path, List<String> snippets, List<LineRange> ranges, AiProvenance provenance) {
         // Ставит метки на код, записанный агентом
         Optional<IFile> file = WorkspaceText.fileFor(path);
         if (file.isEmpty()) {
@@ -42,7 +44,12 @@ public final class MarkerWriter implements AiCodeMarks {
                     return Status.OK_STATUS;
                 }
                 try {
-                    mark(file.get(), WorkspaceText.read(file.get()), snippets, provenance);
+                    String text = WorkspaceText.read(file.get());
+                    if (ranges != null && !ranges.isEmpty()) {
+                        markRanges(file.get(), text, ranges, provenance);
+                    } else {
+                        mark(file.get(), text, snippets, provenance);
+                    }
                     afterMark.accept(file.get());
                 } catch (IOException e) {
                     return Status.warning(e.getMessage());
@@ -54,6 +61,57 @@ public final class MarkerWriter implements AiCodeMarks {
         IResourceRuleFactory rules = ResourcesPlugin.getWorkspace().getRuleFactory();
         job.setRule(MultiRule.combine(rules.refreshRule(file.get().getParent()), rules.markerRule(file.get())));
         job.schedule(300);
+    }
+
+    private static void markRanges(IFile file, String text, List<LineRange> ranges, AiProvenance provenance)
+            throws CoreException {
+        // Отмечает диапазоны строк напрямую по смещениям
+        List<int[]> lines = lineOffsets(text);
+        if (lines.isEmpty()) {
+            return;
+        }
+        int len = text.length();
+        for (LineRange range : ranges) {
+            int startLine = range.startLine();
+            int endLine = range.endLine();
+            if (startLine < 1 || startLine > lines.size() || endLine < startLine) {
+                continue;
+            }
+            int effectiveEnd = Math.min(endLine, lines.size());
+            int start = Math.max(0, Math.min(lines.get(startLine - 1)[0], len));
+            int end = Math.max(start, Math.min(lines.get(effectiveEnd - 1)[1], len));
+            if (!covered(file, start, end)) {
+                AiMarkers.create(file, start, end, text.substring(start, end), provenance);
+            }
+        }
+    }
+
+    private static List<int[]> lineOffsets(String text) {
+        // Рассчитывает начальные и конечные смещения строк
+        List<int[]> lines = new ArrayList<>();
+        int len = text.length();
+        int start = 0;
+        int i = 0;
+        while (i < len) {
+            char c = text.charAt(i);
+            if (c == '\r') {
+                int end = (i + 1 < len && text.charAt(i + 1) == '\n') ? i + 2 : i + 1;
+                lines.add(new int[] {start, end});
+                i = end;
+                start = end;
+            } else if (c == '\n') {
+                int end = i + 1;
+                lines.add(new int[] {start, end});
+                i = end;
+                start = end;
+            } else {
+                i++;
+            }
+        }
+        if (start < len || lines.isEmpty() || (len > 0 && (text.charAt(len - 1) == '\n' || text.charAt(len - 1) == '\r'))) {
+            lines.add(new int[] {start, len});
+        }
+        return lines;
     }
 
     private static void mark(IFile file, String text, List<String> snippets, AiProvenance provenance)

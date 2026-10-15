@@ -1,6 +1,8 @@
 package com.example.edtai.infrastructure.rpc;
 
 import com.example.edtai.domain.ChatEvent;
+import com.example.edtai.domain.LineRange;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.nio.file.Path;
@@ -35,7 +37,36 @@ final class RpcWriteTracker {
             return Optional.empty();
         }
         String path = workDirectory.resolve(JsonFields.text(args, "path")).normalize().toString();
-        return Optional.of(new ChatEvent.CodeWritten(path, snippets(args)));
+        List<LineRange> ranges = parseRanges(record);
+        return Optional.of(new ChatEvent.CodeWritten(path, snippets(args), ranges));
+    }
+
+    private static List<LineRange> parseRanges(JsonObject record) {
+        // Извлекает диапазоны строк из результата инструмента
+        if (!record.has("result") || !record.get("result").isJsonObject()) {
+            return List.of();
+        }
+        JsonObject result = record.getAsJsonObject("result");
+        if (!result.has("details") || !result.get("details").isJsonObject()) {
+            return List.of();
+        }
+        JsonObject details = result.getAsJsonObject("details");
+        if (!details.has("ranges") || !details.get("ranges").isJsonArray()) {
+            return List.of();
+        }
+        JsonArray array = details.getAsJsonArray("ranges");
+        List<LineRange> ranges = new ArrayList<>();
+        for (JsonElement element : array) {
+            if (element.isJsonObject()) {
+                JsonObject range = element.getAsJsonObject();
+                int start = JsonFields.number(range, "startLine");
+                int end = JsonFields.number(range, "endLine");
+                if (start > 0 && end >= start) {
+                    ranges.add(new LineRange(start, end));
+                }
+            }
+        }
+        return List.copyOf(ranges);
     }
 
     private static List<String> snippets(JsonObject args) {

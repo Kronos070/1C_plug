@@ -12,10 +12,14 @@ final class PromptComposer {
     private PromptComposer() {
     }
 
+    static String compose(String text, Optional<CodeContext> context) {
+        // Добавляет к сообщению прикрепленный код
+        return context.map(value -> text + "\n\n" + block(value)).orElse(text);
+    }
+
     static String compose(String text, Optional<CodeContext> context, String rules) {
-        // Добавляет к сообщению правила и прикрепленный код
-        String withRules = rules.isEmpty() ? text : text + "\n\n" + rules;
-        return context.map(value -> withRules + "\n\n" + block(value)).orElse(withRules);
+        // Оставляет промпт чистым без внедрения правил проекта
+        return compose(text, context);
     }
 
     private static String block(CodeContext context) {

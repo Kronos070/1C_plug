@@ -154,6 +154,12 @@ public final class MockAgentGateway implements AgentGateway {
     }
 
     @Override
+    public CompletableFuture<Void> submitFeedback(com.example.edtai.domain.Feedback feedback) {
+        // Имитирует отправку отзыва
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
     public void answer(UiAnswer answer) {
         // Принимает ответ на демо-запрос
         String verdict = Boolean.TRUE.equals(answer.confirmed()) ? "разрешено" : "отклонено";

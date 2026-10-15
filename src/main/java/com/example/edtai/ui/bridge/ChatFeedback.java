@@ -5,9 +5,7 @@ import com.example.edtai.domain.AiProvenance;
 import com.example.edtai.domain.ChatEvent;
 import com.example.edtai.domain.Feedback;
 import com.example.edtai.domain.FeedbackKind;
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 final class ChatFeedback {
@@ -24,13 +22,7 @@ final class ChatFeedback {
         // Сохраняет оценку ответа в чате
         FeedbackKind kind = FeedbackKind.fromId(rating).orElse(FeedbackKind.LIKE);
         Feedback entry = new Feedback(kind, "chat", "", 0, 0, List.of(), comment, answer, "", provenance, "");
-        CompletableFuture.runAsync(() -> {
-            try {
-                service.submit(entry);
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }).whenComplete((ignored, error) -> notify.accept(error == null
+        service.submit(entry).whenComplete((ignored, error) -> notify.accept(error == null
                 ? new ChatEvent.Notice("info", "Спасибо, отзыв сохранен")
                 : new ChatEvent.Notice("error", "Не удалось сохранить отзыв: " + error.getMessage())));
     }
