@@ -68,8 +68,10 @@
     // Формирует блок кода с заголовком
     const label = lang || "код";
     return '<div class="code"><div class="code-head"><span>' + P.escape(label) + "</span>" +
+      '<span class="code-tools"><button class="icon-btn" type="button" data-insert-code ' +
+      'title="Вставить в редактор">' + P.icon("insert", 14) + "</button>" +
       '<button class="icon-btn" type="button" data-copy-code title="Копировать код">' + P.icon("copy", 14) +
-      "</button></div><pre><code>" + P.highlight(code, lang) + "</code></pre></div>";
+      "</button></span></div><pre><code>" + P.highlight(code, lang) + "</code></pre></div>";
   }
 
   function table(rows) {
@@ -98,6 +100,9 @@
       return "\u0000" + (codes.length - 1) + "\u0000";
     });
     html = html
+      .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, function (_m, id, label) {
+        return '<a class="doc-link" data-doc="' + id.trim() + '">' + (label || id).trim() + "</a>";
+      })
       .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a data-href="$2">$1</a>')
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/__([^_]+)__/g, "<strong>$1</strong>")

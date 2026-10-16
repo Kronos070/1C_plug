@@ -2,6 +2,7 @@ package com.example.edtai.application.port;
 
 import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.AgentState;
+import com.example.edtai.domain.Feedback;
 import com.example.edtai.domain.Message;
 import com.example.edtai.domain.ModelInfo;
 import com.example.edtai.domain.ThinkingLevel;
@@ -34,6 +35,10 @@ public interface AgentGateway {
     CompletableFuture<Void> selectThinking(ThinkingLevel level);
 
     CompletableFuture<Void> selectMode(AgentMode mode);
+
+    CompletableFuture<Void> submitFeedback(Feedback feedback);
+
+    DocsGateway docs();
 
     void answer(UiAnswer answer);
 

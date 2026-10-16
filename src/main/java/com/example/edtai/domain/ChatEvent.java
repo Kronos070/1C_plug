@@ -28,6 +28,24 @@ public sealed interface ChatEvent {
     record FilesFound(String query, List<String> paths) implements ChatEvent {
     }
 
+    record CodeWriting(String path, String tool) implements ChatEvent {
+    }
+
+    record CodeWritten(String path, List<String> snippets, List<LineRange> ranges, String tool, String patch)
+            implements ChatEvent {
+
+        public CodeWritten {
+            snippets = snippets == null ? List.of() : List.copyOf(snippets);
+            ranges = ranges == null ? List.of() : List.copyOf(ranges);
+            tool = tool == null ? "" : tool;
+            patch = patch == null ? "" : patch;
+        }
+
+        public CodeWritten(String path, List<String> snippets) {
+            this(path, snippets, List.of(), "", "");
+        }
+    }
+
     record Working() implements ChatEvent {
     }
 

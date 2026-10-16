@@ -7,16 +7,12 @@
 }
 
 .empty-logo {
-  width: 52px;
-  height: 52px;
-  margin: 0 auto 16px;
-  border-radius: 16px;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: var(--accent-text);
-  box-shadow: 0 10px 30px var(--accent-soft);
 }
 
 .empty h1 {

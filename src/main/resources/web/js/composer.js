@@ -10,6 +10,7 @@
       input = P.h("textarea", { rows: "1", placeholder: "Спросите о конфигурации 1С · / — команды · @ — файлы",
         "aria-label": "Сообщение" });
       const chips = P.h("div", { class: "chips" });
+      const contextSlot = P.h("div", { class: "ctx-slot" });
       sendButton = P.h("button", { class: "send", type: "button", onclick: onButton });
       input.addEventListener("input", function () {
         resize();
@@ -20,15 +21,18 @@
       input.addEventListener("blur", function () {
         setTimeout(P.palette.close, 150);
       });
-      const box = P.h("div", { class: "composer" }, [input, P.h("div", { class: "composer-bar" }, [chips, sendButton])]);
+      const box = P.h("div", { class: "composer" }, [contextSlot, input, P.h("div", { class: "composer-bar" }, [chips, sendButton])]);
+      const reviewSlot = P.h("div", { class: "review-slot" });
       P.chips.mount(chips);
+      P.context.mount(contextSlot);
+      P.review.mount(reviewSlot);
       P.palette.attach(box);
-      document.getElementById("composer").append(box,
+      document.getElementById("composer").append(reviewSlot, box,
         P.h("div", { class: "composer-hint", text: "Enter — отправить · Shift+Enter — новая строка · / — команды · @ — файлы" }));
       P.composer.update();
     },
 
-    submit: function (text) {
+    submit: function (text, ask) {
       // Отправляет текст агенту или выполняет команду
       const raw = (text === undefined ? input.value : text).trim();
       if (!raw) {
@@ -43,10 +47,14 @@
         return;
       }
       const value = P.commands.find(raw) ? P.commands.normalize(raw) : raw;
-      P.thread.addUser(value);
-      P.post("send", { text: value });
+      const context = ask ? ask.context : P.context.active();
+      P.thread.addUser(value, context);
+      P.post("send", { text: value, contextId: context ? context.id : "", mode: ask && ask.mode ? ask.mode : "" });
+      P.context.consume(context);
       P.stream.expect();
-      P.composer.setText("");
+      if (!ask) {
+        P.composer.setText("");
+      }
     },
 
     setText: function (text) {

@@ -10,6 +10,8 @@ public final class PreferenceKeys {
     public static final String THEME = "ui.theme";
     public static final String ALLOWED_TOOLS = "permissions.allow";
     public static final String DENIED_TOOLS = "permissions.deny";
+    public static final String FEEDBACK_DIRECTORY = "feedback.directory";
+    public static final String MARKS_VISIBLE = "marks.visible";
 
     private PreferenceKeys() {
     }

@@ -1,0 +1,154 @@
+.home-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.home-hero h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  letter-spacing: -.02em;
+}
+
+.home-hero p {
+  margin: 0;
+  color: var(--text-2);
+  max-width: 580px;
+}
+
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+button.stat:hover {
+  border-color: var(--accent);
+}
+
+.stat strong {
+  font-size: 22px;
+  font-weight: 650;
+}
+
+.stat span {
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.stat.warn strong {
+  color: var(--warning);
+}
+
+.coverage {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 18px;
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.home-hint {
+  margin-top: 26px;
+  color: var(--text-3);
+}
+
+.page-section {
+  margin-top: 26px;
+}
+
+.page-section > h2 {
+  display: flex;
+  align-items: center;
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--accent-soft);
+}
+
+.members {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.member + .member {
+  border-top: 1px solid var(--border);
+}
+
+.member:hover {
+  background: var(--accent-soft);
+}
+
+.member-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.member-text span {
+  color: var(--text-3);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-empty {
+  padding: 20px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--text-2);
+}
+
+.page-empty p {
+  margin: 0 0 10px;
+}

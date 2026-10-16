@@ -10,6 +10,10 @@
     find: "Поиск файлов",
     ls: "Список файлов",
     "1c_ast_symbols": "Структура модуля",
+    "1c_docs_search": "Поиск в документации",
+    "1c_docs_read": "Чтение документации",
+    "1c_docs_write": "Запись документации",
+    "1c_docs_outdated": "Устаревшая документация",
     "1c_call_hierarchy": "Иерархия вызовов",
     "1c_impact_analysis": "Анализ влияния",
     "1c_vanessa": "Vanessa Automation",
@@ -101,6 +105,7 @@
       const part = {
         node: node,
         kind: "tool",
+        doc: P.sources.fromTool(data.name, data.args),
         finish: function (text, failed) {
           // Показывает результат инструмента
           output.textContent = text || (failed ? "Ошибка без описания" : "Готово");

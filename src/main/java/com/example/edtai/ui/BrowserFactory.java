@@ -5,12 +5,12 @@ import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 
-final class BrowserFactory {
+public final class BrowserFactory {
 
     private BrowserFactory() {
     }
 
-    static Browser create(Composite parent) {
+    public static Browser create(Composite parent) {
         // Создает браузер с современным движком
         if ("win32".equals(SWT.getPlatform())) {
             try {

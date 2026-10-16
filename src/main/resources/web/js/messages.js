@@ -38,8 +38,10 @@
     showEmpty: function () {
       // Показывает приветствие с подсказками
       P.thread.clear();
+      const logo = P.logo.create(56, { egg: true });
+      logo.idle(true);
       thread.append(P.h("div", { class: "empty" }, [
-        P.h("div", { class: "empty-logo", html: P.icon("bolt", 26) }),
+        P.h("div", { class: "empty-logo" }, [logo.el]),
         P.h("h1", { text: "Чем помочь?" }),
         P.h("p", { text: "ПерУН знает вашу конфигурацию 1С: объяснит код, найдет данные и напишет документацию." }),
         P.h("div", { class: "suggestions" }, SUGGESTIONS.map(function (item) {
@@ -60,9 +62,10 @@
       P.thread.clear();
       messages.forEach(function (message) {
         if (message.role === "user") {
-          P.thread.addUser(message.parts.map(function (part) {
+          const parsed = P.context.parse(message.parts.map(function (part) {
             return part.text || "";
           }).join("\n"));
+          P.thread.addUser(parsed.text, parsed.context);
         } else {
           const reply = P.thread.reply || P.thread.newReply();
           message.parts.forEach(function (part, index) {
@@ -75,7 +78,7 @@
       P.thread.scroll(true);
     },
 
-    addUser: function (text) {
+    addUser: function (text, context) {
       // Добавляет сообщение пользователя
       if (thread.querySelector(".empty")) {
         P.thread.clear();
@@ -85,7 +88,7 @@
         P.copy(text, copyButton);
       });
       P.thread.append(P.h("div", { class: "msg user" }, [
-        P.h("div", { class: "bubble", text: text }),
+        P.h("div", { class: "bubble" }, [context ? P.context.chip(context) : null, text]),
         P.h("div", { class: "msg-actions" }, [copyButton]),
       ]));
       P.thread.reply = null;

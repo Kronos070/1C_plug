@@ -10,7 +10,7 @@ public final class ToolArguments {
     private static final int SUMMARY_LIMIT = 160;
     private static final int OUTPUT_LIMIT = 6000;
     private static final List<String> KEYS = List.of("path", "file_path", "filePath", "command", "pattern",
-            "query", "metadataName", "procedureName", "featurePath", "role", "action", "url");
+            "query", "metadataName", "procedureName", "featurePath", "role", "action", "url", "id");
 
     private ToolArguments() {
     }

@@ -1,0 +1,91 @@
+.code-tools {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.rate-form:empty {
+  display: none;
+}
+
+.rate-form {
+  margin-top: 6px;
+}
+
+.rate-form .rate-text {
+  width: 100%;
+  height: 60px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  resize: vertical;
+}
+
+.msg-actions .icon-btn.active {
+  color: var(--accent);
+}
+
+.msg-actions.rated {
+  opacity: 1;
+}
+
+.rate-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 6px 0 2px;
+  color: var(--text-2);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.rate-check input {
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 2px;
+}
+
+.sources-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-3);
+  font-size: 11.5px;
+}
+
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.source:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.source.written {
+  border-color: rgba(134, 211, 170, .4);
+}
+
+.source.stale {
+  border-color: var(--warning);
+}
+
+.source-meta {
+  color: var(--text-3);
+  white-space: nowrap;
+}

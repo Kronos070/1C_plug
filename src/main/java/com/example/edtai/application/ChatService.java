@@ -5,14 +5,17 @@ import com.example.edtai.application.port.AgentListener;
 import com.example.edtai.application.port.AgentUnavailableException;
 import com.example.edtai.application.port.ChatOutput;
 import com.example.edtai.application.port.FileFinder;
-import com.example.edtai.application.port.PromptOutcome;
+import com.example.edtai.application.port.RuleStore;
 import com.example.edtai.application.port.SessionCatalog;
 import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.AgentState;
 import com.example.edtai.domain.ChatEvent;
+import com.example.edtai.domain.CodeContext;
 import com.example.edtai.domain.PermissionScope;
 import com.example.edtai.domain.UiAnswer;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public final class ChatService implements AgentListener {
 
@@ -25,6 +28,9 @@ public final class ChatService implements AgentListener {
     private final CommandRunner commands;
     private final AgentSettings settings;
     private final PermissionGuard guard;
+    private final PromptSender sender;
+    private final AiCodeRecorder recorder;
+    private final RuleStore rules;
     private volatile AgentState state;
     private volatile boolean stopped;
 
@@ -32,8 +38,11 @@ public final class ChatService implements AgentListener {
         this.gateway = ports.gateway();
         this.catalog = ports.catalog();
         this.files = ports.files();
+        this.rules = ports.rules();
+        this.recorder = new AiCodeRecorder(ports.marks(), ports.review(), () -> state);
         this.output = output;
         this.guard = new PermissionGuard(gateway, ports.permissions(), this::emit);
+        this.sender = new PromptSender(gateway, this::emit, this::refreshState);
         this.commands = new CommandRunner(gateway.tools(), ports.credentials(), this::emit, this::newChat,
                 this::refreshState);
         this.settings = new AgentSettings(gateway, () -> state, this::emit, this::refreshState);
@@ -58,22 +67,16 @@ public final class ChatService implements AgentListener {
         gateway.stop();
     }
 
-    public void send(String text) {
+    public void send(String text, Optional<CodeContext> context, Optional<AgentMode> mode) {
         // Отправляет сообщение пользователя агенту
         if (text == null || text.isBlank() || commands.tryRun(text.strip())) {
             return;
         }
-        gateway.prompt(text.strip()).whenComplete((outcome, error) -> {
-            if (error != null) {
-                emit(new ChatEvent.Failure(ErrorText.describe(error)));
-                emit(new ChatEvent.Settled(false));
-            } else if (outcome == PromptOutcome.STARTED) {
-                emit(new ChatEvent.Working());
-            } else if (outcome == PromptOutcome.HANDLED) {
-                emit(new ChatEvent.Settled(false));
-                refreshState();
-            }
-        });
+        AgentState current = state;
+        recorder.remember(text.strip());
+        String ruleBlock = RuleBook.block(rules.rules(), text, context);
+        sender.send(PromptComposer.compose(text.strip(), context, ruleBlock), mode.filter(value -> current != null
+                && current.modesSupported() && current.mode() != value));
     }
 
     public void abort() {
@@ -94,20 +97,14 @@ public final class ChatService implements AgentListener {
     public void listSessions() {
         // Публикует список прошлых сессий
         String current = state == null ? null : state.sessionFile();
-        CompletableFuture.supplyAsync(() -> catalog.list(current)).whenComplete((sessions, error) -> {
-            if (error != null) {
-                emit(new ChatEvent.Notice("error", ErrorText.describe(error)));
-            } else {
-                emit(new ChatEvent.SessionsListed(sessions, current));
-            }
-        });
+        deliver(CompletableFuture.supplyAsync(() -> catalog.list(current)),
+                sessions -> new ChatEvent.SessionsListed(sessions, current));
     }
 
     public void findFiles(String query) {
         // Ищет файлы для упоминания через @
-        CompletableFuture.supplyAsync(() -> files.find(query, 30)).whenComplete((paths, error) -> emit(error != null
-                ? new ChatEvent.Notice("error", ErrorText.describe(error))
-                : new ChatEvent.FilesFound(query, paths)));
+        deliver(CompletableFuture.supplyAsync(() -> files.find(query, 30)),
+                paths -> new ChatEvent.FilesFound(query, paths));
     }
 
     public AgentSettings settings() {
@@ -130,7 +127,7 @@ public final class ChatService implements AgentListener {
     @Override
     public void onEvent(ChatEvent event) {
         // Пробрасывает событие агента в интерфейс
-        if (guard.intercept(event)) {
+        if (guard.intercept(event) || recorder.accept(event)) {
             return;
         }
         emit(event);
@@ -169,13 +166,7 @@ public final class ChatService implements AgentListener {
     private CompletableFuture<Void> reload() {
         // Загружает состояние и историю
         CompletableFuture<Void> state = refreshState();
-        gateway.messages().whenComplete((messages, error) -> {
-            if (error != null) {
-                emit(new ChatEvent.Notice("error", ErrorText.describe(error)));
-            } else {
-                emit(new ChatEvent.HistoryLoaded(messages));
-            }
-        });
+        deliver(gateway.messages(), ChatEvent.HistoryLoaded::new);
         return state;
     }
 
@@ -189,6 +180,12 @@ public final class ChatService implements AgentListener {
             }
             return null;
         });
+    }
+
+    private <T> void deliver(CompletableFuture<T> action, Function<T, ChatEvent> event) {
+        // Показывает результат или ошибку запроса
+        action.whenComplete((value, error) -> emit(error != null
+                ? new ChatEvent.Notice("error", ErrorText.describe(error)) : event.apply(value)));
     }
 
     private void publish(AgentState value) {

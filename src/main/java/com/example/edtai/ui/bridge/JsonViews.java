@@ -2,6 +2,7 @@ package com.example.edtai.ui.bridge;
 
 import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.AgentState;
+import com.example.edtai.domain.CodeContext;
 import com.example.edtai.domain.Message;
 import com.example.edtai.domain.MessagePart;
 import com.example.edtai.domain.ModelInfo;
@@ -17,6 +18,18 @@ import java.util.Locale;
 final class JsonViews {
 
     private JsonViews() {
+    }
+
+    static JsonObject context(CodeContext context) {
+        // Описывает прикрепленный код без текста
+        JsonObject json = new JsonObject();
+        json.addProperty("id", context.id());
+        json.addProperty("path", context.path());
+        json.addProperty("kind", context.hasCode() ? "selection" : "file");
+        json.addProperty("startLine", context.startLine());
+        json.addProperty("endLine", context.endLine());
+        json.addProperty("problems", context.problems().size());
+        return json;
     }
 
     static JsonObject state(AgentState state) {
@@ -41,6 +54,7 @@ final class JsonViews {
         }
         json.add("modes", modes);
         json.addProperty("streaming", state.streaming());
+        json.addProperty("docsSupported", state.docsSupported());
         json.addProperty("sessionName", state.sessionName());
         return json;
     }

@@ -6,8 +6,9 @@
     // Создает контейнер ответа ассистента
     const body = P.h("div", { class: "reply-body" });
     const actions = P.h("div", { class: "msg-actions" });
+    const logo = P.logo.create(16);
     const el = P.h("div", { class: "msg assistant" }, [
-      P.h("div", { class: "reply" }, [P.h("div", { class: "reply-avatar", html: P.icon("bolt", 13) }), body]),
+      P.h("div", { class: "reply" }, [P.h("div", { class: "reply-avatar" }, [logo.el]), body]),
     ]);
     const parts = {};
     const order = [];
@@ -20,6 +21,7 @@
 
     const reply = {
       el: el,
+      logo: logo,
 
       part: function (key, factory) {
         // Возвращает часть по ключу или создает
@@ -81,7 +83,12 @@
             P.copy(reply.text(), copyButton);
           });
           actions.append(copyButton);
+          const sources = P.sources.render(order);
+          if (sources) {
+            body.append(sources);
+          }
           body.append(actions);
+          P.rating.attach(el, actions, reply.text);
         }
       },
     };

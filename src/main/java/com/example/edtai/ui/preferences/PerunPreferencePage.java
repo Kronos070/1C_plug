@@ -38,6 +38,10 @@ public final class PerunPreferencePage extends FieldEditorPreferencePage impleme
         addField(new StringFieldEditor(PreferenceKeys.ALLOWED_TOOLS, "Всегда разрешать инструменты:",
                 getFieldEditorParent()));
         addField(new StringFieldEditor(PreferenceKeys.DENIED_TOOLS, "Никогда не разрешать:", getFieldEditorParent()));
+        addField(new DirectoryFieldEditor(PreferenceKeys.FEEDBACK_DIRECTORY,
+                "Каталог отзывов и правил (пусто — .perun в рабочей области):", getFieldEditorParent()));
+        addField(new BooleanFieldEditor(PreferenceKeys.MARKS_VISIBLE, "Подсвечивать код Перуна в редакторе",
+                getFieldEditorParent()));
         addField(new BooleanFieldEditor(PreferenceKeys.DEMO_MODE, "Демо-режим без агента (ответы-заглушки)",
                 getFieldEditorParent()));
     }

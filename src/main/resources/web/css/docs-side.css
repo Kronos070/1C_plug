@@ -1,0 +1,127 @@
+.docs-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+.side-head {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  padding: 0 14px;
+  flex: none;
+}
+
+.side-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.side-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 12px 8px;
+  padding: 0 8px 0 10px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-3);
+  border: 1px solid transparent;
+  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+}
+
+.side-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--glow);
+}
+
+.side-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+
+kbd {
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border-strong);
+  color: var(--text-3);
+  font: 10.5px var(--font);
+  white-space: nowrap;
+}
+
+.side-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 12px 10px;
+}
+
+.side-tabs .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.side-tabs .tab:hover {
+  color: var(--text);
+}
+
+.side-tabs .tab.active {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.tab-count {
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--warning);
+  color: #1c1300;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.side-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 6px 12px;
+}
+
+.side-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-top: 1px solid var(--border);
+  color: var(--text-3);
+  font-size: 11.5px;
+}
+
+.foot-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.docs.unsupported .side-search,
+.docs.unsupported .side-tabs {
+  display: none;
+}

@@ -3,11 +3,13 @@ package com.example.edtai.infrastructure.rpc;
 import com.example.edtai.application.port.AgentGateway;
 import com.example.edtai.application.port.AgentListener;
 import com.example.edtai.application.port.AgentUnavailableException;
+import com.example.edtai.application.port.DocsGateway;
 import com.example.edtai.application.port.PromptOutcome;
 import com.example.edtai.application.port.SessionTools;
 import com.example.edtai.domain.AgentMode;
 import com.example.edtai.domain.AgentState;
 import com.example.edtai.domain.ChatEvent;
+import com.example.edtai.domain.Feedback;
 import com.example.edtai.domain.Message;
 import com.example.edtai.domain.ModelInfo;
 import com.example.edtai.domain.ThinkingLevel;
@@ -19,7 +21,6 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public final class PerunGateway implements AgentGateway {
 
@@ -27,6 +28,8 @@ public final class PerunGateway implements AgentGateway {
 
     private final LaunchSpecSource source;
     private final RpcEventTranslator translator = new RpcEventTranslator();
+    private final RpcWriteTracker writes = new RpcWriteTracker();
+    private final RpcDocsGateway docs = new RpcDocsGateway(() -> this.rpc, () -> this.spec);
     private volatile LaunchSpec spec;
     private volatile AgentProcess process;
     private volatile RpcConnection rpc;
@@ -64,9 +67,9 @@ public final class PerunGateway implements AgentGateway {
         rpc = new RpcConnection(process);
         rpc.open(this::onRecord, this::onClosed);
         try {
-            rpc.request("get_state", null, true).get(30, TimeUnit.SECONDS);
-            JsonObject commands = rpc.request("get_commands", null, true).get(30, TimeUnit.SECONDS);
-            modesSupported = RpcStateAssembler.supportsModes(commands);
+            JsonObject commands = RpcStateAssembler.handshake(rpc);
+            modesSupported = RpcStateAssembler.supports(commands, "mode");
+            docs.support(RpcStateAssembler.supports(commands, "docs"));
         } catch (Exception e) {
             String details = process.stderrTail();
             stop();
@@ -104,7 +107,7 @@ public final class PerunGateway implements AgentGateway {
     @Override
     public CompletableFuture<AgentState> state() {
         // Запрашивает состояние агента
-        return RpcStateAssembler.assemble(rpc, mode, modesSupported);
+        return RpcStateAssembler.assemble(rpc, mode, modesSupported, docs.supported());
     }
 
     @Override
@@ -145,6 +148,19 @@ public final class PerunGateway implements AgentGateway {
     }
 
     @Override
+    public CompletableFuture<Void> submitFeedback(Feedback feedback) {
+        // Отправляет отзыв о коде агенту через RPC
+        return rpc == null ? CompletableFuture.failedFuture(new AgentUnavailableException("Агент не запущен"))
+                : command("submit_feedback", RpcPayloads.feedback(feedback));
+    }
+
+    @Override
+    public DocsGateway docs() {
+        // Возвращает документацию из Перуна
+        return docs;
+    }
+
+    @Override
     public void answer(UiAnswer answer) {
         // Отвечает на запрос расширения
         rpc.send(RpcPayloads.answer(answer));
@@ -169,6 +185,7 @@ public final class PerunGateway implements AgentGateway {
             }
             listener.onEvent(event);
         });
+        writes.track(record, spec.workDirectory()).ifPresent(listener::onEvent);
     }
 
     private void onClosed() {

@@ -1,0 +1,147 @@
+.docs-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 28px 36px 64px;
+  animation: rise .18s var(--ease);
+}
+
+.page-kicker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.page-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.page-title h1,
+.docs-page > h1 {
+  flex: 1;
+  min-width: 200px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -.02em;
+  word-break: break-word;
+}
+
+.page-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.page-actions .btn {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.page-signature {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  font: 12.5px/1.5 var(--mono);
+  white-space: pre-wrap;
+}
+
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 12px 0 0;
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.page-meta > * {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta-module {
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.meta-module:hover {
+  color: var(--accent);
+}
+
+.meta-file {
+  color: var(--accent);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+
+.meta-file:hover {
+  text-decoration: underline;
+}
+
+.page-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+}
+
+.page-note > span:nth-child(2) {
+  flex: 1;
+}
+
+.page-note.warn {
+  background: rgba(238, 194, 124, .12);
+  color: var(--text);
+}
+
+.page-note.warn > span:first-child {
+  color: var(--warning);
+}
+
+.page-note.busy {
+  background: var(--accent-soft);
+}
+
+.page-body {
+  font-size: 13.5px;
+}
+
+.page-comment {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-2);
+  font: 12px/1.55 var(--mono);
+  white-space: pre-wrap;
+}
+
+.section-meta {
+  margin-left: 8px;
+  color: var(--text-3);
+  font-size: 11.5px;
+  font-weight: 400;
+}
+
+.doc-link,
+.md a.doc-link {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px dashed currentColor;
+}
